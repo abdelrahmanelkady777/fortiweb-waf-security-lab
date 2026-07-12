@@ -1,0 +1,15 @@
+services:
+  juiceshop1:
+    image: bkimminich/juice-shop
+    container_name: juiceshop1
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+
+  juiceshop2:
+    image: bkimminich/juice-shop
+    container_name: juiceshop2
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+

@@ -1,0 +1,161 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FortiWeb Lesson 4 API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {"url": "http://api.lab.local"}
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "responses": {
+          "200": {"description": "API health check"}
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "responses": {
+          "200": {"description": "OpenAPI definition"}
+        }
+      }
+    },
+    "/api/register": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "email", "password", "age"],
+                "additionalProperties": false,
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 20,
+                    "pattern": "^[a-zA-Z0-9_-]+$"
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 64
+                  },
+                  "age": {
+                    "type": "integer",
+                    "minimum": 13,
+                    "maximum": 120
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "User registered"}
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "additionalProperties": false,
+                "properties": {
+                  "username": {"type": "string"},
+                  "password": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "JWT returned"},
+          "401": {"description": "Invalid credentials"}
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "Authenticated user profile"},
+          "401": {"description": "Invalid or missing token"}
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {"description": "User by ID"}
+        }
+      }
+    },
+    "/api/xml/upload": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/xml": {"schema": {"type": "string"}},
+            "text/xml": {"schema": {"type": "string"}}
+          }
+        },
+        "responses": {
+          "200": {"description": "XML accepted"}
+        }
+      }
+    },
+    "/graphql": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["query"],
+                "properties": {
+                  "query": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "GraphQL response"}
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
+
