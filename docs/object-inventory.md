@@ -8,7 +8,7 @@
 | 1 | Server Pool | `Juice_shop` | `10.0.20.2:3000`; later `:3001` added |
 | 1 | Server Policy | `Test1_pol` | Main policy retained across all lessons |
 | 2 | Server Pool | `web_goat` | `10.0.20.2:8080` |
-| 2 | Protected Hostnames | `host_lab_apps` | Juice Shop and WebGoat; later Lesson 3/4 names added |
+| 2 | Protected Hostnames | `host_lab_apps` | Juice Shop and WebGoat; later Lesson 3/4/6 names added |
 | 2 | Content Route | `route_juice` | Host `juice.lab.local` -> Juice Shop pool |
 | 2 | Content Route | `route_webgoat` | Host `webgoat.lab.local` -> WebGoat pool |
 | 2 | Persistence | `persist_source_ip` | Source IP `/32`, 300 seconds |
@@ -28,6 +28,18 @@
 | 4 | XML Policy | `xml_policy_lesson4` | XSD, limits, forbidden entities |
 | 4 | OpenAPI Policy | `openapi_policy_lesson4` | Contract enforcement |
 | 4 | DoS Policy | `dos_policy_lesson4` | Login HTTP Access Limit; attached to `Test1_pol` |
+| 6 | Health Check | `hc_delivery_l6_http` | HTTP `GET /` on the Lesson 6 backend |
+| 6 | Server Pool | `pool_delivery_l6` | `10.0.20.2:8003` |
+| 6 | Content Route | `route_delivery_l6` | Host `delivery.lab.local` -> Lesson 6 pool |
+| 6 | Content Route | `route_reports_l6` | Host `reports.lab.local` -> same pool |
+| 6 | URL Rewriting Policy | `urlrewrite_policy_l6` | Redirect, internal request rewrite, and response `Location` rewrite |
+| 6 | LDAP Query | `ldap_l6` | `10.0.20.2:389`, identifier `uid`, Lesson 6 search base |
+| 6 | Authentication Pool | `auth_pool_l6` | Contains `ldap_l6` |
+| 6 | Site Publish Rules | `first_site_pub`, `reports_site_pub` | HTML form authentication and `.lab.local` SSO |
+| 6 | Compression Policy | `compress_l6` / captured `policy1` | Gzip text content; selected through `clone_inline` |
+| 6 | Web Cache Rule | Host/path-scoped rule | `delivery.lab.local/static/`, GET/HEAD, 60-minute inactive expiry |
+| 6 | Acceleration Policy | `acc_1` | HTML/JS/CSS/image optimization; attached to `Test1_pol` |
+| 6 | Lua Script | `lua_header_l6` | Adds `X-Lesson6-Lua: active` to delivery responses |
+| 6 | Waiting Room | `waiting_room_l6` | `/sale`, 1 active user; selected through `clone_inline` |
 
 See each lesson for complete child-rule settings and validation evidence.
-

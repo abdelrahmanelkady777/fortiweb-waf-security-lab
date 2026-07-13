@@ -1,6 +1,6 @@
 # FortiWeb WAF Security Lab
 
-Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study project. The repository documents an incrementally constructed reverse-proxy and application-security environment: every lesson keeps the working delivery path and adds another protection layer to it.
+Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study project. The repository documents an incrementally constructed reverse-proxy, application-security, API-security, and application-delivery environment: every lesson keeps the working traffic path and adds another controlled layer to it.
 
 > This is an independent educational lab, not official Fortinet course material. All attack traffic targets deliberately vulnerable applications inside an isolated environment.
 
@@ -12,6 +12,8 @@ Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study projec
 - HTTPS offloading at FortiWeb with HTTP between FortiWeb and the backends
 - Signature-based and application-aware controls for web traffic
 - API contract enforcement for JSON, XML, GraphQL, and OpenAPI traffic
+- URL rewriting, LDAP-backed Site Publishing, and cross-host SSO
+- Compression, caching, acceleration, Lua response logic, and Waiting Room admission control
 - Repeatable positive, negative, and regression tests from a Kali client
 - Real troubleshooting notes, including misattachments, port mismatches, session requirements, and trial-license limitations
 
@@ -20,10 +22,11 @@ Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study projec
 ```mermaid
 flowchart TB
     K["Kali client / attacker<br/>10.0.11.2"] -->|"HTTP/HTTPS<br/>Host-based requests"| F["FortiWeb<br/>port2 10.0.11.1<br/>VIP 10.0.11.100<br/>Vip1 / Test1_pol / clone_inline"]
-    F -->|"port3 10.0.20.1"| J["Juice Shop pool<br/>10.0.20.2:3000, :3001"]
-    F --> W["WebGoat pool<br/>10.0.20.2:8080"]
+    F -->|"port3 10.0.20.1"| T["Training apps<br/>Juice Shop :3000/:3001<br/>WebGoat :8080"]
     F --> L3["Lesson 3 test site<br/>10.0.20.2:8000"]
     F --> A["Lesson 4 API<br/>10.0.20.2:8002"]
+    F --> L6["Lesson 6 delivery app<br/>10.0.20.2:8003"]
+    F -.-> LDAP["Lesson 6 LDAP<br/>10.0.20.2:389"]
 ```
 
 FortiWeb exposes one client-side entry point and selects the backend from the request hostname:
@@ -34,11 +37,13 @@ FortiWeb exposes one client-side entry point and selects the backend from the re
 | `webgoat.lab.local` | `route_webgoat` | WebGoat training application |
 | `urlenc.lab.local` | `route_urlenc` | Deterministic Lesson 3 HTML, form, script, DLP, and upload tests |
 | `api.lab.local` | `route_api_lesson4` | Deterministic Lesson 4 JSON, XML, GraphQL, JWT, and OpenAPI tests |
+| `delivery.lab.local` | `route_delivery_l6` | Lesson 6 rewriting, publishing, performance, scripting, and queue tests |
+| `reports.lab.local` | `route_reports_l6` | Second published hostname used to validate SSO |
 
 Client-side name resolution used in the lab:
 
 ```text
-10.0.11.100 juice.lab.local webgoat.lab.local urlenc.lab.local api.lab.local
+10.0.11.100 juice.lab.local webgoat.lab.local urlenc.lab.local api.lab.local delivery.lab.local reports.lab.local
 ```
 
 ## Core network and policy chain
@@ -60,11 +65,14 @@ The reusable enforcement chain is:
 
 ```text
 Test1_pol
-  -> clone_inline (Web Protection Profile)
-       -> clone_standard (Signature Policy)
-            -> custom signature groups and signatures
-       -> CSRF, URL encryption, DLP, CORS, input/file controls
-       -> JSON, XML, GraphQL, OpenAPI, and rate-limit controls
+  +-- clone_inline (Web Protection Profile)
+  |    +-- clone_standard -> custom signature groups/signatures
+  |    +-- CSRF, URL encryption, DLP, CORS, input/file controls
+  |    +-- JSON, XML, GraphQL, and OpenAPI controls
+  |    +-- Lesson 6 URL rewriting, compression, and Waiting Room
+  +-- Direct server-policy controls
+       +-- DoS/rate limit and Site Publishing
+       +-- Web Cache, acceleration, and Lua scripting
 ```
 
 This attachment chain matters: creating an object does not enforce it until it is linked into the active profile and the profile is selected by the server policy.
@@ -77,6 +85,7 @@ This attachment chain matters: creating an object does not enforce it until it i
 | [02 - Content Routing and Delivery](lessons/02-content-routing-and-delivery/README.md) | Complete | Complete | Second application, two-host routing, second Juice Shop member, persistence, XFF, IP group, WAF enforcement, and HTTPS offload |
 | [03 - Web Application Protection](lessons/03-web-application-protection/README.md) | Complete | Complete | Known/custom signatures, CSRF, URL controls, DLP, headers, CORS, SRI, input validation, hidden fields, file security, and web-shell detection |
 | [04 - API Protection](lessons/04-api-protection/README.md) | Complete | Complete | Integrated API backend, JSON/XML/GraphQL/OpenAPI enforcement, JWT flow, method control, and rate limiting |
+| [06 - Application Delivery](lessons/06-application-delivery/README.md) | Complete | Complete | Rewriting, LDAP Site Publishing, SSO, compression, caching, acceleration, Lua scripting, and Waiting Room |
 
 The lesson documents are intentionally independent. A reader can stop after any lesson and still have a valid lab state.
 
@@ -90,31 +99,30 @@ The lesson documents are intentionally independent. A reader can stop after any 
 ├── docs/
 │   ├── architecture.md
 │   ├── object-inventory.md
-│   ├── troubleshooting-index.md
-│   └── images/
+│   └── troubleshooting-index.md
 ├── lessons/
 │   ├── _template/README.md
 │   ├── 01-reverse-proxy-foundation/
 │   ├── 02-content-routing-and-delivery/
 │   ├── 03-web-application-protection/
-│   └── 04-api-protection/
+│   ├── 04-api-protection/
+│   └── 06-application-delivery/
+│       ├── README.md
+│       ├── configs/
+│       └── evidence/
 ├── vuln-sites/
 │   ├── juice-shop/
 │   ├── webgoat/
 │   ├── lesson3-test-site/
-│   └── lesson4-api/
+│   ├── lesson4-api/
+│   └── lesson6-delivery/
 ├── fortiweb/
-│   ├── sanitized-objects/
-│   └── screenshots/
-├── scripts/
-│   ├── client/
-│   ├── attacks/
-│   └── validation/
-└── evidence/
-    ├── lesson-01/
-    ├── lesson-02/
-    ├── lesson-03/
-    └── lesson-04/
+│   ├── README.md
+│   └── sanitized-objects/
+└── scripts/
+    ├── client/
+    ├── attacks/
+    └── validation/
 ```
 
 See [REPOSITORY_STRUCTURE.md](REPOSITORY_STRUCTURE.md) for ownership rules and the exact files that should accompany each lesson commit.
@@ -129,7 +137,7 @@ Each lesson follows the same evidence-first structure:
 4. FortiWeb objects and attachment chain
 5. Exact configuration sequence
 6. Baseline request
-7. Attack commands and payloads
+7. Attack, negative-control, or capacity-test commands as applicable
 8. Observed FortiWeb and backend results
 9. Debugging issues and fixes
 10. Positive, negative, and regression validation
@@ -143,7 +151,8 @@ Prerequisites:
 - EVE-NG with a FortiWeb virtual appliance available under a valid license or trial
 - A Kali Linux client on `10.0.11.0/24`
 - An Ubuntu backend host on `10.0.20.0/24`
-- Docker for Juice Shop and WebGoat
+- Docker for Juice Shop, WebGoat, and the isolated Lesson 6 LDAP service
+- Python 3 for the controlled Lesson 3, 4, and 6 backends
 - `curl` for deterministic request/response validation
 
 Recommended validation order:
@@ -182,6 +191,7 @@ Screenshots support the write-up; they do not replace commands and recorded resu
 - Lesson 3 lightweight JavaScript/client-side policy creation was unavailable in the trial image, so the concept was documented without claiming a completed configuration.
 - Lesson 4 ML/API discovery entered a running state but its API collection remained at zero in the tested image.
 - FortiWeb mobile/JWT validation was not exposed in the GUI; JWT issuance and verification were implemented and validated at the backend instead.
+- Lesson 6 source evidence contains two naming/scope inconsistencies (`compress_l6` versus captured `policy1`, and intended text-only cache scope versus a broader GUI capture). The Lesson 6 write-up records both rather than silently rewriting the evidence.
 - Object labels can differ between FortiWeb versions. The write-ups preserve both the object purpose and the values that affect traffic.
 
 ## Responsible use and sanitization
