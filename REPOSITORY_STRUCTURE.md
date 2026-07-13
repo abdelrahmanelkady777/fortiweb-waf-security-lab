@@ -30,9 +30,14 @@ fortiweb-waf-security-lab/
 │   │   ├── README.md
 │   │   ├── configs/
 │   │   └── evidence/
-│   └── 04-api-protection/
+│   ├── 04-api-protection/
+│   │   ├── README.md
+│   │   ├── configs/
+│   │   └── evidence/
+│   └── 06-application-delivery/
 │       ├── README.md
 │       ├── configs/
+│       │   └── lua_header_l6.lua
 │       └── evidence/
 ├── vuln-sites/
 │   ├── README.md
@@ -46,19 +51,24 @@ fortiweb-waf-security-lab/
 │   │   ├── index.html
 │   │   ├── private/
 │   │   └── public/
-│   └── lesson4-api/
+│   ├── lesson4-api/
+│   │   ├── README.md
+│   │   ├── api_server.py
+│   │   ├── schemas/
+│   │   └── openapi.json
+│   └── lesson6-delivery/
 │       ├── README.md
-│       ├── api_server.py
-│       ├── schemas/
-│       └── openapi.json
+│       ├── delivery_server.py
+│       ├── static/
+│       └── ldap/
 ├── fortiweb/
 │   ├── README.md
 │   ├── sanitized-objects/
 │   │   ├── lesson-01.md
 │   │   ├── lesson-02.md
 │   │   ├── lesson-03.md
-│   │   └── lesson-04.md
-│   └── screenshots/
+│   │   ├── lesson-04.md
+│   │   └── lesson-06.md
 ├── scripts/
 │   ├── client/
 │   │   └── setup-hosts.sh
@@ -66,7 +76,8 @@ fortiweb-waf-security-lab/
 │   │   ├── lesson-03.sh
 │   │   └── lesson-04.sh
 │   └── validation/
-│       └── smoke-test.sh
+│       ├── smoke-test.sh
+│       └── lesson-06.sh
 └── evidence/
     ├── lesson-01/
     ├── lesson-02/
@@ -97,6 +108,7 @@ lessons/NN-name/**
 vuln-sites/<backend-added-by-this-lesson>/**   # when applicable
 fortiweb/sanitized-objects/lesson-NN.md
 scripts/attacks/lesson-NN.sh                  # when applicable
+scripts/validation/lesson-NN.sh               # when the lesson has a focused test suite
 scripts/validation/smoke-test.sh              # updated regression checks
 README.md                                     # progress table/link only
 CHANGELOG.md                                  # one new release entry
@@ -120,4 +132,3 @@ Do not pre-create empty future lesson directories. Git does not track empty dire
 - `docs/troubleshooting-index.md`: issue-to-fix index linking back to each lesson
 - `SECURITY.md`: lab-only scope, disclosure contact, and secret-reporting instructions
 - `LICENSE`: choose a license before public release; consider separating documentation and code licenses if desired
-

@@ -22,6 +22,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - Nothing yet.
 
+## [0.6.0] - 2026-07-13
+
+### Added
+
+- Lesson 6 controlled application-delivery backend on `10.0.20.2:8003`.
+- `delivery.lab.local` and `reports.lab.local` routes behind the existing `10.0.11.100` VIP.
+- URL redirect, internal request rewrite, and response `Location` rewrite controls.
+- LDAP-backed Site Publishing with HTML-form authentication and cross-host SSO.
+- Gzip compression, host/path-scoped caching, acceleration, Lua response scripting, and Waiting Room admission control.
+- Curated Lesson 6 screenshots, a focused automated validation script, and sanitized FortiWeb object records for the published lessons.
+
+### Changed
+
+- Extended the cumulative architecture, hostname mapping, hosts helper, smoke tests, object inventory, and troubleshooting index through Lesson 6.
+- Reconciled source-evidence differences for the compression object name and cache file-type scope instead of silently normalizing them.
+
+### Validated
+
+- Rewriting changed the intended request/response elements while preserving public application behavior.
+- LDAP authentication protected `/private/`; one SSO login covered both Lesson 6 hostnames.
+- Compression, cache, acceleration, Lua header injection, and Waiting Room behavior were verified with curl, backend logs, or independent browser sessions.
+- Existing Lesson 1-4 routes remained in the regression set.
+
 ## [0.4.0] - 2026-07-08
 
 ### Added
@@ -98,7 +121,7 @@ Recommended types:
 
 Recommended scopes:
 
-`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
+`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `lesson-06`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
 
 Examples:
 
@@ -109,9 +132,9 @@ feat(lesson-03): document layered web protections
 fix(lesson-03): inspect JSON SQLi in request raw body
 feat(lesson-04): enforce API schemas and OpenAPI contract
 test(lesson-04): add login burst and regression checks
+feat(lesson-06): add integrated application-delivery controls
 docs(readme): mark lesson 4 complete
 chore(release): tag v0.4.0
 ```
 
 Prefer one complete lesson commit over many commits named `update`, `changes`, or `final`. If a lesson is too large for one commit, split it by meaningful outcome, such as backend, FortiWeb objects, tests, and documentation.
-

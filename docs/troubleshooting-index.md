@@ -14,4 +14,9 @@
 | JSON violations reach API | Attach JSON policy to `clone_inline`; re-save `Test1_pol` | [4](../lessons/04-api-protection/README.md) |
 | GraphQL introspection still allowed | Disable the allow-style introspection toggle | [4](../lessons/04-api-protection/README.md) |
 | API discovery remains zero | Record image/trial limitation; use manual controls | [4](../lessons/04-api-protection/README.md) |
-
+| Lesson 6 routes fail after reboot | Restart the Python `:8003` service; verify HTTP health and pool status | [6](../lessons/06-application-delivery/README.md) |
+| Rewrite object has no effect | Verify rule -> rewriting policy -> `clone_inline` -> `Test1_pol` | [6](../lessons/06-application-delivery/README.md) |
+| Private path remains public | Check Site Publish host/path, auth pool, and direct `Test1_pol` attachment | [6](../lessons/06-application-delivery/README.md) |
+| SSO prompts twice | Align both rules and `.lab.local`; clear stale cookies | [6](../lessons/06-application-delivery/README.md) |
+| Compression/cache is absent | Check feature visibility, client encoding, content type, host/path, and cache key | [6](../lessons/06-application-delivery/README.md) |
+| Lua header or Waiting Room is absent | Verify direct scripting list or profile-layer queue attachment and exact host/path | [6](../lessons/06-application-delivery/README.md) |

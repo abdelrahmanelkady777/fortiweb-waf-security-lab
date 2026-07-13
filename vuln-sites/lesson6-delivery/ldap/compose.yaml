@@ -1,0 +1,11 @@
+services:
+  ldap-l6:
+    image: osixia/openldap:1.5.0
+    container_name: ldap-l6
+    restart: unless-stopped
+    ports:
+      - "389:389"
+    environment:
+      LDAP_ORGANISATION: "FortiWeb Lesson 6"
+      LDAP_DOMAIN: "lab.local"
+      LDAP_ADMIN_PASSWORD: "${LDAP_ADMIN_PASSWORD:?export LDAP_ADMIN_PASSWORD}"
