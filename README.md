@@ -186,14 +186,6 @@ Every claimed control should include:
 
 Screenshots support the write-up; they do not replace commands and recorded results.
 
-## Known environment limitations
-
-- Lesson 3 lightweight JavaScript/client-side policy creation was unavailable in the trial image, so the concept was documented without claiming a completed configuration.
-- Lesson 4 ML/API discovery entered a running state but its API collection remained at zero in the tested image.
-- FortiWeb mobile/JWT validation was not exposed in the GUI; JWT issuance and verification were implemented and validated at the backend instead.
-- Lesson 6 source evidence contains two naming/scope inconsistencies (`compress_l6` versus captured `policy1`, and intended text-only cache scope versus a broader GUI capture). The Lesson 6 write-up records both rather than silently rewriting the evidence.
-- Object labels can differ between FortiWeb versions. The write-ups preserve both the object purpose and the values that affect traffic.
-
 ## Responsible use and sanitization
 
 Do not commit private keys, license files, real credentials, management-session cookies, bearer tokens, password hashes, or unsanitized FortiWeb configuration exports. Replace temporary lab tokens and cookie values with placeholders while preserving the command structure.
