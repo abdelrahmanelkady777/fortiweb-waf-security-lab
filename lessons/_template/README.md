@@ -174,7 +174,7 @@ If the payload is clearer separately:
 - Backend received request: `<yes/no/not checked>`
 - Relevant response/log excerpt: `<short excerpt>`
 
-**Evidence:** [`<descriptive-file>`](evidence/<descriptive-file>)
+**Evidence:** `evidence/<descriptive-file>`
 
 **Interpretation:** Explain why this proves the FortiWeb control acted, rather than the backend merely rejecting the request.
 
@@ -258,8 +258,8 @@ Prefer changing a test control from `Alert & Deny` to `Alert` during diagnosis i
 
 | Artifact | Description |
 | --- | --- |
-| [`<file>`](evidence/<file>) | `<what it proves>` |
-| [`<config>`](configs/<file>) | `<schema/object/export purpose>` |
+| `evidence/<file>` | `<what it proves>` |
+| `configs/<file>` | `<schema/object/export purpose>` |
 
 ### Sanitization check before commit
 
@@ -269,4 +269,3 @@ Prefer changing a test control from `Alert & Deny` to `Alert` during diagnosis i
 - [ ] No unrelated personal or management-network information in screenshots
 - [ ] Every screenshot has a descriptive filename and caption
 - [ ] Every security claim has a command and observed result
-

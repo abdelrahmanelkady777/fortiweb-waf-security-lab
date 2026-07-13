@@ -41,5 +41,14 @@
 | 6 | Acceleration Policy | `acc_1` | HTML/JS/CSS/image optimization; attached to `Test1_pol` |
 | 6 | Lua Script | `lua_header_l6` | Adds `X-Lesson6-Lua: active` to delivery responses |
 | 6 | Waiting Room | `waiting_room_l6` | `/sale`, 1 active user; selected through `clone_inline` |
+| 7 | HTTP Flood Prevention | `FP_1` | 3 req/sec per session per URL; selected by `POLHTTP7` |
+| 7 | HTTP Access Limit | `HAL_7` | 5 req/sec standalone IP, 10 shared IP; selected by `POLHTTP7` |
+| 7 | Malicious IPs | `MALIP_7` | 5 concurrent TCP connections per HTTP session; selected by `POLHTTP7` |
+| 7 | TCP Flood Prevention | `TCPFP_7` | 5 fully formed TCP connections per source IP; selected by `POLHTTP7` |
+| 7 | DoS Protection Policy | `POLHTTP7` | Four child rules plus final Layer 3 Fragment Protection; attached to `Test1_pol` |
+| 7 | Syslog Policy | `syslogssss` | `10.0.20.2:514/TCP`, JSON; Event/Attack/Traffic at Information |
+| 7 | Sensitive Data Logging | `sensitive_l7` | General Masks for password, token, and card-like JSON values |
 
 See each lesson for complete child-rule settings and validation evidence.
+
+Lesson 7 evidence note: the supplied policy screenshot is an intermediate capture with `accLim1`, `MalIP`, and Fragment Protection off. The final report records `HAL_7`/`MALIP_7`, and the lab operator confirmed Fragment Protection was enabled afterward.

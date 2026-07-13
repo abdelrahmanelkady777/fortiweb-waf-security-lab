@@ -34,10 +34,15 @@ fortiweb-waf-security-lab/
 │   │   ├── README.md
 │   │   ├── configs/
 │   │   └── evidence/
-│   └── 06-application-delivery/
+│   ├── 06-application-delivery/
+│   │   ├── README.md
+│   │   ├── configs/
+│   │   │   └── lua_header_l6.lua
+│   │   └── evidence/
+│   └── 07-dos-and-logging/
 │       ├── README.md
 │       ├── configs/
-│       │   └── lua_header_l6.lua
+│       │   └── sensitive-data-masks.txt
 │       └── evidence/
 ├── vuln-sites/
 │   ├── README.md
@@ -68,16 +73,19 @@ fortiweb-waf-security-lab/
 │   │   ├── lesson-02.md
 │   │   ├── lesson-03.md
 │   │   ├── lesson-04.md
-│   │   └── lesson-06.md
+│   │   ├── lesson-06.md
+│   │   └── lesson-07.md
 ├── scripts/
 │   ├── client/
 │   │   └── setup-hosts.sh
 │   ├── attacks/
 │   │   ├── lesson-03.sh
-│   │   └── lesson-04.sh
+│   │   ├── lesson-04.sh
+│   │   └── lesson-07.sh
 │   └── validation/
 │       ├── smoke-test.sh
-│       └── lesson-06.sh
+│       ├── lesson-06.sh
+│       └── lesson-07.sh
 └── evidence/
     ├── lesson-01/
     ├── lesson-02/
@@ -122,6 +130,7 @@ Do not pre-create empty future lesson directories. Git does not track empty dire
 - Images: `NN-control-test-result.png`, for example `03-csrf-missing-token-block.png`
 - Evidence outputs: `NN-test-name-response.txt`
 - FortiWeb objects: keep the real lab object name in backticks, even if the file has a descriptive name
+- Intermediate screenshots: label them pre-final and state the final verified/corrected condition in the evidence index
 - Sanitized secrets: `<REDACTED>`, `<TOKEN>`, `<COOKIE>`, or `<PRIVATE_KEY_REMOVED>`
 - Commands: use fenced `bash`, `json`, `xml`, or `graphql` blocks rather than screenshots of terminals
 
