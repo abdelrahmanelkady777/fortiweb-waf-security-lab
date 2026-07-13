@@ -14,6 +14,8 @@ Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study projec
 - API contract enforcement for JSON, XML, GraphQL, and OpenAPI traffic
 - URL rewriting, LDAP-backed Site Publishing, and cross-host SSO
 - Compression, caching, acceleration, Lua response logic, and Waiting Room admission control
+- Session-aware and source-IP DoS controls, Layer 3 Fragment Protection, and timed enforcement
+- Local Event/Attack/Traffic logging, structured TCP syslog, and sensitive-value masking
 - Repeatable positive, negative, and regression tests from a Kali client
 - Real troubleshooting notes, including misattachments, port mismatches, session requirements, and trial-license limitations
 
@@ -21,12 +23,13 @@ Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study projec
 
 ```mermaid
 flowchart TB
-    K["Kali client / attacker<br/>10.0.11.2"] -->|"HTTP/HTTPS<br/>Host-based requests"| F["FortiWeb<br/>port2 10.0.11.1<br/>VIP 10.0.11.100<br/>Vip1 / Test1_pol / clone_inline"]
+    K["Kali client / attacker<br/>10.0.11.2"] -->|"HTTP/HTTPS<br/>Host-based requests"| F["FortiWeb<br/>port2 10.0.11.1<br/>VIP 10.0.11.100<br/>Test1_pol / clone_inline / POLHTTP7"]
     F -->|"port3 10.0.20.1"| T["Training apps<br/>Juice Shop :3000/:3001<br/>WebGoat :8080"]
     F --> L3["Lesson 3 test site<br/>10.0.20.2:8000"]
     F --> A["Lesson 4 API<br/>10.0.20.2:8002"]
     F --> L6["Lesson 6 delivery app<br/>10.0.20.2:8003"]
     F -.-> LDAP["Lesson 6 LDAP<br/>10.0.20.2:389"]
+    F -.-> SYS["Lesson 7 JSON syslog<br/>10.0.20.2:514/TCP"]
 ```
 
 FortiWeb exposes one client-side entry point and selects the backend from the request hostname:
@@ -39,6 +42,8 @@ FortiWeb exposes one client-side entry point and selects the backend from the re
 | `api.lab.local` | `route_api_lesson4` | Deterministic Lesson 4 JSON, XML, GraphQL, JWT, and OpenAPI tests |
 | `delivery.lab.local` | `route_delivery_l6` | Lesson 6 rewriting, publishing, performance, scripting, and queue tests |
 | `reports.lab.local` | `route_reports_l6` | Second published hostname used to validate SSO |
+
+Lesson 7 added no hostname or protected backend. It reused `delivery.lab.local` for rate/connection tests and `api.lab.local` for controlled sensitive-log payloads; `10.0.20.2` also served as the lab syslog receiver.
 
 Client-side name resolution used in the lab:
 
@@ -71,8 +76,12 @@ Test1_pol
   |    +-- JSON, XML, GraphQL, and OpenAPI controls
   |    +-- Lesson 6 URL rewriting, compression, and Waiting Room
   +-- Direct server-policy controls
-       +-- DoS/rate limit and Site Publishing
+       +-- POLHTTP7 session/IP rate and connection controls plus fragment protection
+       +-- Site Publishing
        +-- Web Cache, acceleration, and Lua scripting
+  +-- Global logging
+       +-- Local Event, Attack, and Traffic logs
+       +-- TCP/JSON syslog and sensitive-data masks
 ```
 
 This attachment chain matters: creating an object does not enforce it until it is linked into the active profile and the profile is selected by the server policy.
@@ -86,6 +95,7 @@ This attachment chain matters: creating an object does not enforce it until it i
 | [03 - Web Application Protection](lessons/03-web-application-protection/README.md) | Complete | Complete | Known/custom signatures, CSRF, URL controls, DLP, headers, CORS, SRI, input validation, hidden fields, file security, and web-shell detection |
 | [04 - API Protection](lessons/04-api-protection/README.md) | Complete | Complete | Integrated API backend, JSON/XML/GraphQL/OpenAPI enforcement, JWT flow, method control, and rate limiting |
 | [06 - Application Delivery](lessons/06-application-delivery/README.md) | Complete | Complete | Rewriting, LDAP Site Publishing, SSO, compression, caching, acceleration, Lua scripting, and Waiting Room |
+| [07 - DoS Protection and Logging](lessons/07-dos-and-logging/README.md) | Complete | Complete | Session/source-IP request and connection controls, fragment protection, local/remote logs, and sensitive-value masking |
 
 The lesson documents are intentionally independent. A reader can stop after any lesson and still have a valid lab state.
 
@@ -106,7 +116,11 @@ The lesson documents are intentionally independent. A reader can stop after any 
 │   ├── 02-content-routing-and-delivery/
 │   ├── 03-web-application-protection/
 │   ├── 04-api-protection/
-│   └── 06-application-delivery/
+│   ├── 06-application-delivery/
+│   │   ├── README.md
+│   │   ├── configs/
+│   │   └── evidence/
+│   └── 07-dos-and-logging/
 │       ├── README.md
 │       ├── configs/
 │       └── evidence/
@@ -154,6 +168,8 @@ Prerequisites:
 - Docker for Juice Shop, WebGoat, and the isolated Lesson 6 LDAP service
 - Python 3 for the controlled Lesson 3, 4, and 6 backends
 - `curl` for deterministic request/response validation
+- `hping3` for the explicitly opted-in, ten-packet Lesson 7 fragment test
+- A TCP/514 receiver on the isolated backend segment for remote-log validation
 
 Recommended validation order:
 

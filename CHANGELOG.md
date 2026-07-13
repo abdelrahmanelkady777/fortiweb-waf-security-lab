@@ -22,6 +22,33 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - Nothing yet.
 
+## [0.7.0] - 2026-07-13
+
+### Added
+
+- Lesson 7 session-aware and source-IP request/connection controls in combined policy `POLHTTP7`.
+- Layer 3 Fragment Protection, local Event/Attack/Traffic logging, TCP/JSON syslog forwarding, and sensitive-data masking records.
+- Focused Lesson 7 safe validation and isolated-lab attack scripts.
+- Curated Lesson 7 evidence with explicit screenshot/report proof boundaries.
+
+### Changed
+
+- Extended the cumulative architecture, object inventory, troubleshooting index, smoke tests, repository map, and backend-purpose index through Lesson 7.
+- Recorded that Lesson 7 reused the Lesson 4/6 backends and added no new application or hostname.
+- Restored the missing Lesson 3 README that the root index and later lessons already referenced.
+
+### Validated
+
+- The supplied attack log directly shows HTTP Flood Prevention, HTTP Access Limit, and Malicious IPs subtypes for `10.0.11.2` against `delivery.lab.local/new`.
+- The supplied global settings show Information-level disk/syslog logging for Event, Attack, and Traffic with policy `syslogssss` and local use 7.
+- The Syslog Policy figure embedded in the supplied report directly shows `10.0.20.2:514/TCP` with JSON format.
+- TCP Flood Prevention, fragment detection, receiver-side syslog receipt, value masking, timer recovery, and session-separation outcomes remain report-recorded where no raw screenshot was supplied.
+
+### Evidence notes
+
+- The supplied `POLHTTP7` image is a pre-final capture. It shows `accLim1`, `MalIP`, and Fragment Protection off; the final report records `HAL_7`/`MALIP_7`, and the lab operator confirmed Fragment Protection was enabled afterward.
+- The active combined-policy record flags a carry-forward re-test for the earlier Lesson 4 login limit rather than claiming two simultaneous DoS-policy attachments without evidence.
+
 ## [0.6.0] - 2026-07-13
 
 ### Added
@@ -121,7 +148,7 @@ Recommended types:
 
 Recommended scopes:
 
-`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `lesson-06`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
+`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `lesson-06`, `lesson-07`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
 
 Examples:
 
@@ -133,6 +160,7 @@ fix(lesson-03): inspect JSON SQLi in request raw body
 feat(lesson-04): enforce API schemas and OpenAPI contract
 test(lesson-04): add login burst and regression checks
 feat(lesson-06): add integrated application-delivery controls
+feat(lesson-07): add layered DoS protection and logging
 docs(readme): mark lesson 4 complete
 chore(release): tag v0.4.0
 ```

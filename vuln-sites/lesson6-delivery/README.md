@@ -2,6 +2,8 @@
 
 This dependency-free Python service provides deterministic endpoints for URL rewriting, Site Publishing, compression, caching, acceleration, Lua response manipulation, and Waiting Room validation.
 
+Lesson 7 reuses `/new` for request-rate tests, `/slow` for overlapping-connection tests, and `/headers` for fresh-session recovery checks. No Lesson 7 backend code change is required.
+
 ## Run the application
 
 ```bash

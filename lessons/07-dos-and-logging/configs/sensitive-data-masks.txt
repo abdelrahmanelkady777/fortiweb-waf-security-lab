@@ -1,0 +1,7 @@
+# FortiWeb Lesson 7 - sensitive_l7 General Mask expressions
+# These patterns are documented from the final Lesson 7 report.
+# They mask matching JSON key/value text in new packet-payload logs.
+
+"password"\s*:\s*"[^"]*"
+"token"\s*:\s*"[^"]*"
+"card"\s*:\s*"[^"]*"
