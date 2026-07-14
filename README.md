@@ -1,6 +1,6 @@
 # FortiWeb WAF Security Lab
 
-Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study project. The repository documents an incrementally constructed reverse-proxy, application-security, API-security, and application-delivery environment: every lesson keeps the working traffic path and adds another controlled layer to it.
+Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study project. The repository documents an incrementally constructed reverse-proxy, application-security, API-security, application-delivery, and assessment environment: every lesson keeps the working traffic path and adds another controlled layer or operational capability.
 
 > This is an independent educational lab, not official Fortinet course material. All attack traffic targets deliberately vulnerable applications inside an isolated environment.
 
@@ -16,6 +16,8 @@ Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study projec
 - Compression, caching, acceleration, Lua response logic, and Waiting Room admission control
 - Session-aware and source-IP DoS controls, Layer 3 Fragment Protection, and timed enforcement
 - Local Event/Attack/Traffic logging, structured TCP syslog, and sensitive-value masking
+- PCI DSS/OWASP control interpretation and evidence boundaries
+- FortiWeb Web Vulnerability Scan, scan governance, remediation, and rescan workflow
 - Repeatable positive, negative, and regression tests from a Kali client
 - Real troubleshooting notes, including misattachments, port mismatches, session requirements, and trial-license limitations
 
@@ -24,6 +26,7 @@ Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study projec
 ```mermaid
 flowchart TB
     K["Kali client / attacker<br/>10.0.11.2"] -->|"HTTP/HTTPS<br/>Host-based requests"| F["FortiWeb<br/>port2 10.0.11.1<br/>VIP 10.0.11.100<br/>Test1_pol / clone_inline / POLHTTP7"]
+    S["Lesson 8 scan<br/>TestOwasp10 -> Test1<br/>OWASP Top 10"] -.->|"http://juice.lab.local"| F
     F -->|"port3 10.0.20.1"| T["Training apps<br/>Juice Shop :3000/:3001<br/>WebGoat :8080"]
     F --> L3["Lesson 3 test site<br/>10.0.20.2:8000"]
     F --> A["Lesson 4 API<br/>10.0.20.2:8002"]
@@ -43,7 +46,7 @@ FortiWeb exposes one client-side entry point and selects the backend from the re
 | `delivery.lab.local` | `route_delivery_l6` | Lesson 6 rewriting, publishing, performance, scripting, and queue tests |
 | `reports.lab.local` | `route_reports_l6` | Second published hostname used to validate SSO |
 
-Lesson 7 added no hostname or protected backend. It reused `delivery.lab.local` for rate/connection tests and `api.lab.local` for controlled sensitive-log payloads; `10.0.20.2` also served as the lab syslog receiver.
+Lessons 7 and 8 added no hostname or protected backend. Lesson 7 reused `delivery.lab.local` for rate/connection tests and `api.lab.local` for controlled sensitive-log payloads; `10.0.20.2` also served as the lab syslog receiver. Lesson 8 used profile `Test1` and the `OWASP Top 10` template to launch policy `TestOwasp10` against `http://juice.lab.local` without changing routing; the captured status was `Starting`.
 
 Client-side name resolution used in the lab:
 
@@ -82,9 +85,15 @@ Test1_pol
   +-- Global logging
        +-- Local Event, Attack, and Traffic logs
        +-- TCP/JSON syslog and sensitive-data masks
+
+Assessment plane (not an enforcement-profile attachment)
+  +-- Web Vulnerability Scan
+       +-- OWASP Top 10 -> Test1 -> http://juice.lab.local
+       +-- TestOwasp10 -> Run Now -> captured Starting state
+       +-- Scan History -> dashboard/Recommendations -> validate/remediate/rescan
 ```
 
-This attachment chain matters: creating an object does not enforce it until it is linked into the active profile and the profile is selected by the server policy.
+For enforcement controls, the attachment chain matters: creating an object does not enforce it until it is linked into the active profile and the profile is selected by the server policy. The Lesson 8 scan workflow is separate and targets an existing published application.
 
 ## Lessons
 
@@ -96,6 +105,7 @@ This attachment chain matters: creating an object does not enforce it until it i
 | [04 - API Protection](lessons/04-api-protection/README.md) | Complete | Complete | Integrated API backend, JSON/XML/GraphQL/OpenAPI enforcement, JWT flow, method control, and rate limiting |
 | [06 - Application Delivery](lessons/06-application-delivery/README.md) | Complete | Complete | Rewriting, LDAP Site Publishing, SSO, compression, caching, acceleration, Lua scripting, and Waiting Room |
 | [07 - DoS Protection and Logging](lessons/07-dos-and-logging/README.md) | Complete | Complete | Session/source-IP request and connection controls, fragment protection, local/remote logs, and sensitive-value masking |
+| [08 - Compliance and Vulnerability Scanning](lessons/08-compliance-and-vulnerability-scanning/README.md) | Complete | Complete | PCI DSS/OWASP correlation plus a screenshot-proven OWASP Top 10 scan launch against Juice Shop |
 
 The lesson documents are intentionally independent. A reader can stop after any lesson and still have a valid lab state.
 
@@ -120,7 +130,11 @@ The lesson documents are intentionally independent. A reader can stop after any 
 │   │   ├── README.md
 │   │   ├── configs/
 │   │   └── evidence/
-│   └── 07-dos-and-logging/
+│   ├── 07-dos-and-logging/
+│   │   ├── README.md
+│   │   ├── configs/
+│   │   └── evidence/
+│   └── 08-compliance-and-vulnerability-scanning/
 │       ├── README.md
 │       ├── configs/
 │       └── evidence/
@@ -151,7 +165,7 @@ Each lesson follows the same evidence-first structure:
 4. FortiWeb objects and attachment chain
 5. Exact configuration sequence
 6. Baseline request
-7. Attack, negative-control, or capacity-test commands as applicable
+7. Attack, negative-control, capacity-test, or assessment procedure as applicable
 8. Observed FortiWeb and backend results
 9. Debugging issues and fixes
 10. Positive, negative, and regression validation
@@ -170,6 +184,7 @@ Prerequisites:
 - `curl` for deterministic request/response validation
 - `hping3` for the explicitly opted-in, ten-packet Lesson 7 fragment test
 - A TCP/514 receiver on the isolated backend segment for remote-log validation
+- An approved target and maintenance window before starting any active vulnerability scan
 
 Recommended validation order:
 
@@ -187,6 +202,8 @@ curl -i -H "Host: <hostname>" http://10.0.11.100/<path>
 # 5. Run one deliberately invalid request.
 # 6. Confirm the FortiWeb action/log and verify whether the backend saw it.
 # 7. Re-test all earlier hostnames.
+# 8. For assessment work, capture the scan profile, target, template, history,
+#    findings, remediation, regression, and rescan result.
 ```
 
 ## Evidence standard
@@ -199,6 +216,8 @@ Every claimed control should include:
 - The FortiWeb event or attack-log evidence
 - Backend evidence when needed to distinguish a WAF block from an application rejection
 - A known-good control request showing legitimate traffic still works
+
+Assessment claims should additionally retain the authorized target/scope, scan profile/template, execution status, coverage limitations, findings, remediation owner, and rescan/closure record. A course screenshot or green dashboard alone is not certification evidence.
 
 Screenshots support the write-up; they do not replace commands and recorded results.
 

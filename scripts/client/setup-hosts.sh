@@ -2,7 +2,7 @@
 set -euo pipefail
 
 vip="${FORTIWEB_VIP:-10.0.11.100}"
-# Lesson 7 reuses the Lesson 4/6 hostnames and introduces no new DNS name.
+# Lessons 7-8 reuse existing hostnames and introduce no new DNS name.
 hosts=(
   juice.lab.local
   webgoat.lab.local

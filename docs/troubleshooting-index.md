@@ -28,3 +28,9 @@
 | Syslog receiver is empty | Match `514/TCP`, allow FortiWeb's source, and generate fresh selected log categories | [7](../lessons/07-dos-and-logging/README.md) |
 | Sensitive values remain in logs | Enable the rule, generate a new request, and inspect the new packet log rather than history | [7](../lessons/07-dos-and-logging/README.md) |
 | Lesson 4 login limit disappears after Lesson 7 | Migrate the earlier rule into the active combined DoS policy if only one selector is available | [7](../lessons/07-dos-and-logging/README.md) |
+| Web Vulnerability Scan menu is absent | Enable it under Feature Visibility and refresh the administrative session | [8](../lessons/08-compliance-and-vulnerability-scanning/README.md) |
+| Scan profile cannot reach its target | Prove VIP/hostname/route/pool/protocol availability with a normal request first | [8](../lessons/08-compliance-and-vulnerability-scanning/README.md) |
+| Scan coverage is unexpectedly low | Check authentication, redirects, exclusions, and crawl boundaries | [8](../lessons/08-compliance-and-vulnerability-scanning/README.md) |
+| Active scan triggers a Lesson 7 block | Use an approved window and review low DoS thresholds/Period Block state | [8](../lessons/08-compliance-and-vulnerability-scanning/README.md) |
+| Scanner finding cannot be reproduced | Validate target version, request proof, parameters, and authentication before mitigation | [8](../lessons/08-compliance-and-vulnerability-scanning/README.md) |
+| Compliance dashboard looks clean but audit proof is incomplete | Retain profile, target, history, findings, remediation, regression, and rescan evidence | [8](../lessons/08-compliance-and-vulnerability-scanning/README.md) |

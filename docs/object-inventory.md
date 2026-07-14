@@ -48,7 +48,13 @@
 | 7 | DoS Protection Policy | `POLHTTP7` | Four child rules plus final Layer 3 Fragment Protection; attached to `Test1_pol` |
 | 7 | Syslog Policy | `syslogssss` | `10.0.20.2:514/TCP`, JSON; Event/Attack/Traffic at Information |
 | 7 | Sensitive Data Logging | `sensitive_l7` | General Masks for password, token, and card-like JSON values |
+| 8 | Feature Visibility | Web Vulnerability Scan | Enabled; exposes scan profile/template/schedule/history/integration/reporting workflow |
+| 8 | Scan Template | `OWASP Top 10` | Selected by scan profile `Test1` |
+| 8 | Scan Profile | `Test1` | Target `http://juice.lab.local`; uses `OWASP Top 10` |
+| 8 | Web Vulnerability Scan Policy | `TestOwasp10` | `Run Now`; profile `Test1`; captured status `Starting` |
 
 See each lesson for complete child-rule settings and validation evidence.
 
 Lesson 7 evidence note: the supplied policy screenshot is an intermediate capture with `accLim1`, `MalIP`, and Fragment Protection off. The final report records `HAL_7`/`MALIP_7`, and the lab operator confirmed Fragment Protection was enabled afterward.
+
+Lesson 8 evidence note: lab screenshots verify feature visibility, built-in templates, profile `Test1`, target `http://juice.lab.local`, template `OWASP Top 10`, policy `TestOwasp10`, `Run Now`, and status `Starting`. The assessment workflow adds no enforcement attachment.

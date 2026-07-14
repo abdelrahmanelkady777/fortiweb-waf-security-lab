@@ -9,13 +9,13 @@
 
 ### Objective
 
-State the security or delivery capability added in this lesson in one paragraph.
+State the security, delivery, assessment, or knowledge capability added or covered in this lesson in one paragraph.
 
 ### In scope
 
 - `<Capability or control>`
 - `<Backend/application change>`
-- `<Attack and validation family>`
+- `<Attack, assessment, or validation family; write "None" when not applicable>`
 
 ### Out of scope
 
@@ -24,9 +24,9 @@ State the security or delivery capability added in this lesson in one paragraph.
 
 ### Completion criteria
 
-- [ ] Known-good traffic reaches the intended backend.
-- [ ] The negative test is detected or blocked with the configured action.
-- [ ] The FortiWeb event identifies the expected rule/control.
+- [ ] Known-good traffic reaches the intended backend or assessment target, when applicable.
+- [ ] The negative test is detected/blocked, or the assessment execution is recorded, when applicable.
+- [ ] The FortiWeb event, scan history, or retained evidence identifies the expected control/workflow.
 - [ ] Earlier lesson routes still pass regression tests.
 - [ ] Trial/license limitations are recorded honestly.
 
@@ -96,9 +96,9 @@ sudo ss -lntp | grep ':<port>'
 
 Observed result: `<result>`
 
-## 5. FortiWeb objects and policies created
+## 5. FortiWeb objects, policies, or assessment workflow
 
-List every object created or modified. Use the exact GUI/CLI object name.
+List every object created or modified. Use the exact GUI/CLI object name. For a knowledge/assessment lesson, record feature visibility, profile/template/history relationships and explicitly mark uncaptured values.
 
 | Order | Object type | Object name | Critical settings | Attached to |
 | ---: | --- | --- | --- | --- |
@@ -128,7 +128,7 @@ List every object created or modified. Use the exact GUI/CLI object name.
 | Test ID | Type | Request | Expected result | Observed result | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | `NN-01` | Baseline | `<summary>` | Allowed | `<status/action>` | `<link>` |
-| `NN-02` | Attack | `<summary>` | Alert/Deny | `<status/action>` | `<link>` |
+| `NN-02` | Attack/assessment | `<summary>` | `<Alert/Deny/Completed>` | `<status/action>` | `<link>` |
 | `NN-03` | Regression | `<older hostname>` | Allowed | `<status/action>` | `<link>` |
 
 Use three categories:
@@ -137,7 +137,9 @@ Use three categories:
 - Negative test: the malformed or malicious request the control should handle
 - Regression test: an earlier lesson's path that must remain functional
 
-## 7. Attacks attempted
+## 7. Attacks or assessment activity
+
+If the lesson includes no manual attack, say so explicitly and document the authorized assessment workflow instead of creating a placeholder attack.
 
 Record the exact command and exact payload. Do not replace commands with screenshots.
 
@@ -268,4 +270,4 @@ Prefer changing a test control from `Alert & Deny` to `Alert` during diagnosis i
 - [ ] No reusable JWTs, session cookies, or bearer tokens
 - [ ] No unrelated personal or management-network information in screenshots
 - [ ] Every screenshot has a descriptive filename and caption
-- [ ] Every security claim has a command and observed result
+- [ ] Every runtime security claim has a command and observed result; assessment claims include target/profile/history/retest evidence or an explicit proof limitation
