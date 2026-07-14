@@ -9,7 +9,7 @@ test_url() {
   printf '%-28s %s\n' "$name" "$status"
 }
 
-echo "FortiWeb lab regression smoke test"
+echo "FortiWeb lab regression smoke test (through Lesson 8)"
 test_url "Juice Shop HTTP" "http://juice.lab.local/"
 test_url "Juice Shop HTTPS" "https://juice.lab.local/"
 test_url "WebGoat HTTP" "http://webgoat.lab.local/WebGoat/"
@@ -19,3 +19,4 @@ test_url "Lesson 6 delivery" "http://delivery.lab.local/"
 test_url "Lesson 6 reports" "http://reports.lab.local/"
 test_url "Lesson 6 redirect source" "http://delivery.lab.local/old"
 test_url "Lesson 7 fast DoS target" "http://delivery.lab.local/new"
+echo "Lesson 8 adds no route; the existing results are scan-target readiness checks."

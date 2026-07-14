@@ -39,10 +39,15 @@ fortiweb-waf-security-lab/
 │   │   ├── configs/
 │   │   │   └── lua_header_l6.lua
 │   │   └── evidence/
-│   └── 07-dos-and-logging/
+│   ├── 07-dos-and-logging/
+│   │   ├── README.md
+│   │   ├── configs/
+│   │   │   └── sensitive-data-masks.txt
+│   │   └── evidence/
+│   └── 08-compliance-and-vulnerability-scanning/
 │       ├── README.md
 │       ├── configs/
-│       │   └── sensitive-data-masks.txt
+│       │   └── scan-evidence-record.md
 │       └── evidence/
 ├── vuln-sites/
 │   ├── README.md
@@ -74,7 +79,8 @@ fortiweb-waf-security-lab/
 │   │   ├── lesson-03.md
 │   │   ├── lesson-04.md
 │   │   ├── lesson-06.md
-│   │   └── lesson-07.md
+│   │   ├── lesson-07.md
+│   │   └── lesson-08.md
 ├── scripts/
 │   ├── client/
 │   │   └── setup-hosts.sh
@@ -85,7 +91,8 @@ fortiweb-waf-security-lab/
 │   └── validation/
 │       ├── smoke-test.sh
 │       ├── lesson-06.sh
-│       └── lesson-07.sh
+│       ├── lesson-07.sh
+│       └── lesson-08.sh
 └── evidence/
     ├── lesson-01/
     ├── lesson-02/
@@ -121,6 +128,8 @@ scripts/validation/smoke-test.sh              # updated regression checks
 README.md                                     # progress table/link only
 CHANGELOG.md                                  # one new release entry
 ```
+
+Knowledge/assessment lessons can legitimately omit a backend and attack script. Record the non-applicable delta explicitly and add only safe readiness/regression automation; do not create placeholder services or attack files.
 
 Do not pre-create empty future lesson directories. Git does not track empty directories, and publishing them early weakens the lesson-by-lesson history. Copy `lessons/_template/` only when starting the next lesson.
 

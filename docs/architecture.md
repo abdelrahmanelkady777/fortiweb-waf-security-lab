@@ -4,13 +4,14 @@
 
 | Zone | Addressing | Role |
 | --- | --- | --- |
-| Client side | `10.0.11.0/24` | Kali generates known-good and attack traffic |
-| FortiWeb entry | `port2 10.0.11.1`, VIP `10.0.11.100` | TLS termination, routing, WAF/API enforcement, delivery, DoS controls, and logging |
+| Client/assessment side | `10.0.11.0/24` plus authorized scan profile | Kali generates known-good/attack traffic; Lesson 8 assesses an existing published target |
+| FortiWeb entry | `port2 10.0.11.1`, VIP `10.0.11.100` | TLS termination, routing, WAF/API enforcement, delivery, DoS controls, logging, and vulnerability-assessment workflow |
 | Server side | `port3 10.0.20.1`, backend `10.0.20.2` | Application pools, deterministic test services, isolated LDAP, and lab syslog receiver |
 
 ```mermaid
 flowchart TB
     C["Client zone<br/>Kali 10.0.11.2"] -->|"HTTP/HTTPS"| W["FortiWeb<br/>10.0.11.100"]
+    V8["Lesson 8 Web Vulnerability Scan<br/>TestOwasp10 -> Test1<br/>OWASP Top 10"] -.->|"http://juice.lab.local"| W
     W -->|"HTTP after offload"| B["Backend host<br/>10.0.20.2"]
     B --> A1["Training apps<br/>Juice Shop :3000/:3001<br/>WebGoat :8080"]
     B --> A3["Lesson 3 site :8000"]
@@ -32,6 +33,28 @@ flowchart TB
 8. FortiWeb forwards allowed traffic to the selected backend over HTTP.
 9. Local logs retain Event, Attack, and Traffic context; selected records are forwarded as JSON to `10.0.20.2:514/TCP`.
 
+## Lesson 8 assessment plane
+
+Lesson 8 did not alter the nine-step data-plane flow. Web Vulnerability Scan operates as a separate assessment workflow:
+
+```text
+Feature Visibility
+  -> Scan Template: OWASP Top 10
+  -> Scan Profile: Test1 -> http://juice.lab.local
+  -> Scan Policy: TestOwasp10 -> Run Now -> captured Starting state
+  -> Scan History -> dashboard/Recommendations
+  -> validate -> remediate -> regression test -> rescan
+```
+
+| Component | Relationship to the integrated lab |
+| --- | --- |
+| Target | `http://juice.lab.local`; screenshot-verified |
+| Routing/policy | Reuses `10.0.11.100`, `Vip1`, `Test1_pol`, and an existing route/pool |
+| Enforcement profile | No new child attachment to `clone_inline` or `POLHTTP7` |
+| Data-plane delta | None |
+| Assessment objects | Profile `Test1`; template `OWASP Top 10`; policy `TestOwasp10`; `Run Now` |
+| Captured state | `Starting` |
+
 ## Lesson 7 control planes
 
 | Plane | Objects | Identity/resource |
@@ -51,3 +74,5 @@ flowchart TB
 - Authentication, caching, and queue tests use fresh independent sessions when cookies affect the result.
 - DoS actions begin in Alert; only one low-threshold rule is deliberately enforced at a time.
 - Blocking tests end with timer recovery and earlier-route regression checks.
+- Active scans require an authorized target, bounded crawl scope, approved window, and post-scan regression.
+- Compliance mappings and dashboards support prioritization/evidence; they are not automatic certification.
