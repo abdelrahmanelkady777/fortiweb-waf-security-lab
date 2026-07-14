@@ -223,10 +223,14 @@ Screenshots support the write-up; they do not replace commands and recorded resu
 
 ## Responsible use and sanitization
 
-Do not commit private keys, license files, real credentials, management-session cookies, bearer tokens, password hashes, or unsanitized FortiWeb configuration exports. Replace temporary lab tokens and cookie values with placeholders while preserving the command structure.
+Do not commit private keys, FortiWeb appliance license files, real credentials, management-session cookies, bearer tokens, password hashes, or unsanitized FortiWeb configuration exports. Replace temporary lab tokens and cookie values with placeholders while preserving the command structure.
 
 Attack commands in this repository are for the isolated lab only. Do not use them against systems without explicit authorization.
 
 ## Project history
 
 The repository is released lesson by lesson. See [CHANGELOG.md](CHANGELOG.md) for the release convention and milestone record.
+
+## License
+
+The original code and documentation in this repository are licensed under the [MIT License](LICENSE). Product names, trademarks, course screenshots, and referenced third-party applications remain the property of their respective owners and are not relicensed by this repository.
