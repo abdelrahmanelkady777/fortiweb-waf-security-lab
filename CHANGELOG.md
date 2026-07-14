@@ -12,7 +12,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
-- Nothing yet.
+- Root MIT license covering the repository's original code and documentation.
 
 ### Changed
 
