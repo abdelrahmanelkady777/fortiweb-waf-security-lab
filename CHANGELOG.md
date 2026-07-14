@@ -22,6 +22,31 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - Nothing yet.
 
+## [0.8.0] - 2026-07-14
+
+### Added
+
+- Lesson 8 compliance and assessment documentation covering PCI DSS 4.0.1, OWASP Top 10 - 2021, and OWASP API Security Top 10 - 2023.
+- Web Vulnerability Scan workflow, scan-evidence worksheet, sanitized assessment record, and safe pre-scan readiness/regression validation.
+- Eight supplied course screenshots plus four target-specific FortiWeb lab screenshots with explicit evidence captions and proof limitations.
+- FortiDAST/Security Fabric scan-to-defense workflow documentation without claiming a FortiDAST deployment.
+
+### Changed
+
+- Extended the cumulative architecture, object inventory, troubleshooting index, hosts helper, smoke tests, backend-purpose index, repository map, and FortiWeb record index through Lesson 8.
+- Recorded that Lesson 8 reused the single VIP and existing published applications without adding a backend, pool, route, hostname, attack script, or runtime protection.
+
+### Validated
+
+- Lab evidence verifies Web Vulnerability Scan visibility and the built-in Full Audit, Fast Scan, Brute Force, and OWASP Top 10 templates.
+- Lab evidence verifies profile `Test1`, target `http://juice.lab.local`, selected template `OWASP Top 10`, policy `TestOwasp10`, `Run Now`, and captured status `Starting`.
+- Existing Lesson 1-7 routes remain in the safe regression set; the Lesson 8 script does not start an active scan.
+
+### Evidence notes
+
+- Compliance/OWASP/FortiDAST captures are course knowledge evidence, not proof of organizational compliance or a deployed external scanner.
+- The target-specific lab captures document the implemented scan chain from feature visibility through the `Starting` state.
+
 ## [0.7.0] - 2026-07-13
 
 ### Added
@@ -148,7 +173,7 @@ Recommended types:
 
 Recommended scopes:
 
-`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `lesson-06`, `lesson-07`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
+`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `lesson-06`, `lesson-07`, `lesson-08`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
 
 Examples:
 
@@ -161,6 +186,7 @@ feat(lesson-04): enforce API schemas and OpenAPI contract
 test(lesson-04): add login burst and regression checks
 feat(lesson-06): add integrated application-delivery controls
 feat(lesson-07): add layered DoS protection and logging
+feat(lesson-08): document compliance and vulnerability scanning
 docs(readme): mark lesson 4 complete
 chore(release): tag v0.4.0
 ```
