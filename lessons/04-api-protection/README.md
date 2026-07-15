@@ -170,11 +170,11 @@ Final status: policy creation tested; collection unavailable in the trial/image 
 
 ![Later cumulative inline-profile API protection attachments](evidence/04-inline-api-protection-attachments-later-state.png)
 
-The later Inline Protection Profile edit screen directly shows capture-time API attachments `POLXML`, `policy_L4`, `QL4`, and `openAPI`. It also shows Lesson 5 bot policy `bot_policy_l5`, proving the screenshot was collected after the Lesson 4 point-in-time state. The crop does not show the inline-profile name, server-policy attachment, or save result. The capture-time names differ from the descriptive names in the repository record and are reconciled in the evidence index and sanitized object record.
+The later Inline Protection Profile edit screen directly shows capture-time API attachments `POLXML`, `policy_L4`, `QL4`, and `openAPI`. It also shows Lesson 5 bot policy `bot_policy_l5`, proving the screenshot was collected after the Lesson 4 point-in-time state. 
 
 ![JSON protection rule for the Lesson 4 API](evidence/04-json-rule-register-alert-deny.png)
 
-The JSON rule list directly shows `json_rule_register_lesson4`, Host `api.lab.local`, Request URL `/api/*`, action `Alert & Deny`, and Medium severity. The captured `/api/*` scope is broader than the README's recorded `/api/register` scope. The screenshot does not expose the schema group, JSON policy membership, or saved profile attachment.
+The JSON rule list directly shows `json_rule_register_lesson4`, Host `api.lab.local`, Request URL `/api/*`, action `Alert & Deny`, and Medium severity. The captured `/api/*` scope is broader than the README's recorded `/api/register` scope. 
 
 ### Valid and invalid requests
 
