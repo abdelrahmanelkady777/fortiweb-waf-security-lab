@@ -13,10 +13,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ### Added
 
 - Root MIT license covering the repository's original code and documentation.
+- Five curated Lesson 1 implementation captures covering the EVE-NG topology, FortiWeb data-plane interfaces, backend Juice Shop container, Network VIP, and successful HTTP response through the VIP.
 
 ### Changed
 
-- Nothing yet.
+- Added claim-specific captions, an evidence index, and explicit proof limitations to the Lesson 1 README and sanitized object record.
+- Preserved the management-address discrepancy between the Lesson 1 narrative (`192.168.1.32`) and the later interface capture (`192.168.1.41/24`) without changing the documented data path.
 
 ## [0.9.0] - 2026-07-15
 
