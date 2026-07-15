@@ -12,7 +12,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [0.2.1] - 2026-07-15
 
-This patch release backfills implementation evidence for Lesson 1 (`v0.1.0`) and Lesson 2 (`v0.2.0`) without adding a new lesson or changing the single-VIP lab architecture.
+This patch release backfills implementation evidence for Lesson 1 (`v0.1.0`) and Lesson 2 (`v0.2.0`) without adding a new lesson or changing the single-VIP lab architecture. (It was released after `v0.9.0`; entries are ordered by release recency.)
 
 ### Added
 
@@ -203,7 +203,7 @@ Recommended types:
 
 Recommended scopes:
 
-`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `lesson-06`, `lesson-07`, `lesson-08`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
+`lesson-01`, `lesson-02`, `lesson-03`, `lesson-04`, `lesson-05`, `lesson-06`, `lesson-07`, `lesson-08`, `backend`, `fortiweb`, `evidence`, `readme`, and `release`.
 
 Examples:
 
