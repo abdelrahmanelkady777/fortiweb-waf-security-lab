@@ -1,20 +1,16 @@
 # Repository Structure and Publishing Rules
 
-## Recommended tree
+## Publishing tree
 
 ```text
 fortiweb-waf-security-lab/
 ├── README.md
 ├── CHANGELOG.md
 ├── LICENSE
-├── SECURITY.md
-├── .gitignore
 ├── docs/
 │   ├── architecture.md
 │   ├── object-inventory.md
 │   ├── troubleshooting-index.md
-│   └── images/
-│       └── topology/
 ├── lessons/
 │   ├── _template/
 │   │   └── README.md
@@ -33,6 +29,11 @@ fortiweb-waf-security-lab/
 │   ├── 04-api-protection/
 │   │   ├── README.md
 │   │   ├── configs/
+│   │   └── evidence/
+│   ├── 05-bot-mitigation/
+│   │   ├── README.md
+│   │   ├── configs/
+│   │   │   └── bot-mitigation-settings.md
 │   │   └── evidence/
 │   ├── 06-application-delivery/
 │   │   ├── README.md
@@ -66,6 +67,9 @@ fortiweb-waf-security-lab/
 │   │   ├── api_server.py
 │   │   ├── schemas/
 │   │   └── openapi.json
+│   ├── lesson5-bot/
+│   │   ├── README.md
+│   │   └── bot_server.py
 │   └── lesson6-delivery/
 │       ├── README.md
 │       ├── delivery_server.py
@@ -78,6 +82,7 @@ fortiweb-waf-security-lab/
 │   │   ├── lesson-02.md
 │   │   ├── lesson-03.md
 │   │   ├── lesson-04.md
+│   │   ├── lesson-05.md
 │   │   ├── lesson-06.md
 │   │   ├── lesson-07.md
 │   │   └── lesson-08.md
@@ -87,17 +92,14 @@ fortiweb-waf-security-lab/
 │   ├── attacks/
 │   │   ├── lesson-03.sh
 │   │   ├── lesson-04.sh
+│   │   ├── lesson-05.sh
 │   │   └── lesson-07.sh
 │   └── validation/
 │       ├── smoke-test.sh
+│       ├── lesson-05.sh
 │       ├── lesson-06.sh
 │       ├── lesson-07.sh
 │       └── lesson-08.sh
-└── evidence/
-    ├── lesson-01/
-    ├── lesson-02/
-    ├── lesson-03/
-    └── lesson-04/
 ```
 
 ## Directory ownership
@@ -148,5 +150,4 @@ Do not pre-create empty future lesson directories. Git does not track empty dire
 - `docs/architecture.md`: expanded topology, traffic flow, and trust boundaries
 - `docs/object-inventory.md`: cumulative table of object name, type, attachment point, first lesson, and current status
 - `docs/troubleshooting-index.md`: issue-to-fix index linking back to each lesson
-- `SECURITY.md`: lab-only scope, disclosure contact, and secret-reporting instructions
-- `LICENSE`: choose a license before public release; consider separating documentation and code licenses if desired
+- `LICENSE`: repository license for original code and documentation

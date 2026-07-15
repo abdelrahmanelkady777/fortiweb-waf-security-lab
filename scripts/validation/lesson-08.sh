@@ -44,6 +44,7 @@ check_target "juice.lab.local" "/" "Juice Shop route"
 check_target "webgoat.lab.local" "/WebGoat/" "WebGoat route"
 check_target "urlenc.lab.local" "/public/lwjs.html" "Lesson 3 route"
 check_target "api.lab.local" "/health" "Lesson 4 API route"
+check_target "bot.lab.local" "/health" "Lesson 5 bot route"
 check_target "delivery.lab.local" "/new" "Lesson 6 delivery route"
 check_target "reports.lab.local" "/" "Lesson 6 reports route"
 
