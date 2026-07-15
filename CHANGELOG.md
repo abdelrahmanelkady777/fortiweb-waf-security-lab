@@ -10,6 +10,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-07-15
+
+This patch release backfills implementation evidence for Lesson 1 (`v0.1.0`) and Lesson 2 (`v0.2.0`) without adding a new lesson or changing the single-VIP lab architecture.
+
 ### Added
 
 - Root MIT license covering the repository's original code and documentation.
@@ -47,10 +51,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - The ML capture shows anomaly count `1` with dynamic updates enabled; the final report records threshold `2` and dynamic updates disabled during the controlled anomaly test. Both are retained without asserting an unsupported final value.
 - The Known Bots settings capture shows temporary `Alert & Deny`; the report records the non-disruptive operating state as Alert after the proof.
-
-### Fixed
-
-- Nothing yet.
 
 ## [0.8.0] - 2026-07-14
 
