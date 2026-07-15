@@ -173,7 +173,7 @@ No attack payload was part of Lesson 1. This lesson intentionally proved deliver
 | [`01-network-vip-vip1.png`](evidence/01-network-vip-vip1.png) | Network VIP `VIP1`, `10.0.11.100/24`, interface `port2` | Separate virtual server `Vip1`, pool, hostname, service, or policy attachment |
 | [`01-vip-http-200-response.png`](evidence/01-vip-http-200-response.png) | `juice.lab.local` -> `10.0.11.100:80`, source `10.0.11.2`, `GET /`, `200 OK` | Response-body title or individual internal FortiWeb attachment pages |
 
-No supplied screenshot directly shows `Vip1`, `hc_icmp_juice`, `Juice_shop`, the protected-hostname object, or the `Test1_pol` configuration page. Their names and attachment relationships are retained from the repository's canonical Lesson 1 record without presenting them as screenshot-proven.
+
 
 ## 9. Final validated state
 
