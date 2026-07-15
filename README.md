@@ -12,6 +12,7 @@ Hands-on FortiWeb WAF lab built in EVE-NG as an NSE 5/FortiWeb self-study projec
 - HTTPS offloading at FortiWeb with HTTP between FortiWeb and the backends
 - Signature-based and application-aware controls for web traffic
 - API contract enforcement for JSON, XML, GraphQL, and OpenAPI traffic
+- Bot mitigation through biometric, behavioral-threshold, known-bot, and ML-based detection
 - URL rewriting, LDAP-backed Site Publishing, and cross-host SSO
 - Compression, caching, acceleration, Lua response logic, and Waiting Room admission control
 - Session-aware and source-IP DoS controls, Layer 3 Fragment Protection, and timed enforcement
@@ -30,6 +31,7 @@ flowchart TB
     F -->|"port3 10.0.20.1"| T["Training apps<br/>Juice Shop :3000/:3001<br/>WebGoat :8080"]
     F --> L3["Lesson 3 test site<br/>10.0.20.2:8000"]
     F --> A["Lesson 4 API<br/>10.0.20.2:8002"]
+    F --> L5["Lesson 5 bot lab<br/>10.0.20.2:8004"]
     F --> L6["Lesson 6 delivery app<br/>10.0.20.2:8003"]
     F -.-> LDAP["Lesson 6 LDAP<br/>10.0.20.2:389"]
     F -.-> SYS["Lesson 7 JSON syslog<br/>10.0.20.2:514/TCP"]
@@ -43,15 +45,16 @@ FortiWeb exposes one client-side entry point and selects the backend from the re
 | `webgoat.lab.local` | `route_webgoat` | WebGoat training application |
 | `urlenc.lab.local` | `route_urlenc` | Deterministic Lesson 3 HTML, form, script, DLP, and upload tests |
 | `api.lab.local` | `route_api_lesson4` | Deterministic Lesson 4 JSON, XML, GraphQL, JWT, and OpenAPI tests |
+| `bot.lab.local` | `route_bot_l5` | Deterministic Lesson 5 bot, crawler, scraper, and ML behavior tests |
 | `delivery.lab.local` | `route_delivery_l6` | Lesson 6 rewriting, publishing, performance, scripting, and queue tests |
 | `reports.lab.local` | `route_reports_l6` | Second published hostname used to validate SSO |
 
-Lessons 7 and 8 added no hostname or protected backend. Lesson 7 reused `delivery.lab.local` for rate/connection tests and `api.lab.local` for controlled sensitive-log payloads; `10.0.20.2` also served as the lab syslog receiver. Lesson 8 used profile `Test1` and the `OWASP Top 10` template to launch policy `TestOwasp10` against `http://juice.lab.local` without changing routing; the captured status was `Starting`.
+Lesson 7 and 8 added no hostname or protected backend. Lesson 7 reused `delivery.lab.local` for rate/connection tests and `api.lab.local` for controlled sensitive-log payloads; `10.0.20.2` also served as the lab syslog receiver. Lesson 8 used profile `Test1` and the `OWASP Top 10` template to launch policy `TestOwasp10` against `http://juice.lab.local` without changing routing; the captured status was `Starting`.
 
 Client-side name resolution used in the lab:
 
 ```text
-10.0.11.100 juice.lab.local webgoat.lab.local urlenc.lab.local api.lab.local delivery.lab.local reports.lab.local
+10.0.11.100 juice.lab.local webgoat.lab.local urlenc.lab.local api.lab.local bot.lab.local delivery.lab.local reports.lab.local
 ```
 
 ## Core network and policy chain
@@ -77,8 +80,10 @@ Test1_pol
   |    +-- clone_standard -> custom signature groups/signatures
   |    +-- CSRF, URL encryption, DLP, CORS, input/file controls
   |    +-- JSON, XML, GraphQL, and OpenAPI controls
+  |    +-- Lesson 5 bot_policy_l5 -> biometric_l5 / threshold_l5 / known_bots_l5
   |    +-- Lesson 6 URL rewriting, compression, and Waiting Room
   +-- Direct server-policy controls
+       +-- Lesson 5 Machine Learning -> ml_bot_l5
        +-- POLHTTP7 session/IP rate and connection controls plus fragment protection
        +-- Site Publishing
        +-- Web Cache, acceleration, and Lua scripting
@@ -103,6 +108,7 @@ For enforcement controls, the attachment chain matters: creating an object does 
 | [02 - Content Routing and Delivery](lessons/02-content-routing-and-delivery/README.md) | Complete | Complete | Second application, two-host routing, second Juice Shop member, persistence, XFF, IP group, WAF enforcement, and HTTPS offload |
 | [03 - Web Application Protection](lessons/03-web-application-protection/README.md) | Complete | Complete | Known/custom signatures, CSRF, URL controls, DLP, headers, CORS, SRI, input validation, hidden fields, file security, and web-shell detection |
 | [04 - API Protection](lessons/04-api-protection/README.md) | Complete | Complete | Integrated API backend, JSON/XML/GraphQL/OpenAPI enforcement, JWT flow, method control, and rate limiting |
+| [05 - Bot Mitigation](lessons/05-bot-mitigation/README.md) | Complete | Complete | Integrated bot backend, biometric/threshold/known-bot detection, and ML-based bot detection with documented evidence boundaries |
 | [06 - Application Delivery](lessons/06-application-delivery/README.md) | Complete | Complete | Rewriting, LDAP Site Publishing, SSO, compression, caching, acceleration, Lua scripting, and Waiting Room |
 | [07 - DoS Protection and Logging](lessons/07-dos-and-logging/README.md) | Complete | Complete | Session/source-IP request and connection controls, fragment protection, local/remote logs, and sensitive-value masking |
 | [08 - Compliance and Vulnerability Scanning](lessons/08-compliance-and-vulnerability-scanning/README.md) | Complete | Complete | PCI DSS/OWASP correlation plus a screenshot-proven OWASP Top 10 scan launch against Juice Shop |
@@ -126,6 +132,10 @@ The lesson documents are intentionally independent. A reader can stop after any 
 │   ├── 02-content-routing-and-delivery/
 │   ├── 03-web-application-protection/
 │   ├── 04-api-protection/
+│   ├── 05-bot-mitigation/
+│   │   ├── README.md
+│   │   ├── configs/
+│   │   └── evidence/
 │   ├── 06-application-delivery/
 │   │   ├── README.md
 │   │   ├── configs/
@@ -143,6 +153,7 @@ The lesson documents are intentionally independent. A reader can stop after any 
 │   ├── webgoat/
 │   ├── lesson3-test-site/
 │   ├── lesson4-api/
+│   ├── lesson5-bot/
 │   └── lesson6-delivery/
 ├── fortiweb/
 │   ├── README.md
@@ -180,7 +191,7 @@ Prerequisites:
 - A Kali Linux client on `10.0.11.0/24`
 - An Ubuntu backend host on `10.0.20.0/24`
 - Docker for Juice Shop, WebGoat, and the isolated Lesson 6 LDAP service
-- Python 3 for the controlled Lesson 3, 4, and 6 backends
+- Python 3 for the controlled Lesson 3, 4, 5, and 6 backends
 - `curl` for deterministic request/response validation
 - `hping3` for the explicitly opted-in, ten-packet Lesson 7 fragment test
 - A TCP/514 receiver on the isolated backend segment for remote-log validation

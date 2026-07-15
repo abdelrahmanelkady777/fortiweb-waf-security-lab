@@ -8,14 +8,15 @@ hosts=(
   webgoat.lab.local
   urlenc.lab.local
   api.lab.local
+  bot.lab.local
   delivery.lab.local
   reports.lab.local
 )
 managed_line="$vip ${hosts[*]}"
 
-if grep -Eq '(^|[[:space:]])(juice|webgoat|urlenc|api|delivery|reports)\.lab\.local([[:space:]]|$)' /etc/hosts; then
+if grep -Eq '(^|[[:space:]])(juice|webgoat|urlenc|api|bot|delivery|reports)\.lab\.local([[:space:]]|$)' /etc/hosts; then
   echo "A FortiWeb lab hostname already exists in /etc/hosts. Review it manually:"
-  grep -E '(juice|webgoat|urlenc|api|delivery|reports)\.lab\.local' /etc/hosts
+  grep -E '(juice|webgoat|urlenc|api|bot|delivery|reports)\.lab\.local' /etc/hosts
   echo "The complete integrated mapping should be:"
   echo "$managed_line"
   exit 1

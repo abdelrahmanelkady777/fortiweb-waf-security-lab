@@ -14,6 +14,10 @@
 | JSON violations reach API | Attach JSON policy to `clone_inline`; re-save `Test1_pol` | [4](../lessons/04-api-protection/README.md) |
 | GraphQL introspection still allowed | Disable the allow-style introspection toggle | [4](../lessons/04-api-protection/README.md) |
 | API discovery remains zero | Record image/trial limitation; use manual controls | [4](../lessons/04-api-protection/README.md) |
+| `bot.lab.local` fails while the backend works | Check hosts mapping, protected hostname, `route_bot_l5`, and `Test1_pol` routing | [5](../lessons/05-bot-mitigation/README.md) |
+| Bot controls exist but do not log | Verify `bot_policy_l5 -> clone_inline -> Test1_pol`; ML has a separate policy path | [5](../lessons/05-bot-mitigation/README.md) |
+| Biometric or threshold test does not fire | Use a fresh non-browser cookie jar / confirm rapid Client-IP threshold traffic and timing | [5](../lessons/05-bot-mitigation/README.md) |
+| ML model has no samples or blocks normal users | Train on clean graphical-browser HTML `200` requests; return to Alert and retrain if contaminated | [5](../lessons/05-bot-mitigation/README.md) |
 | Lesson 6 routes fail after reboot | Restart the Python `:8003` service; verify HTTP health and pool status | [6](../lessons/06-application-delivery/README.md) |
 | Rewrite object has no effect | Verify rule -> rewriting policy -> `clone_inline` -> `Test1_pol` | [6](../lessons/06-application-delivery/README.md) |
 | Private path remains public | Check Site Publish host/path, auth pool, and direct `Test1_pol` attachment | [6](../lessons/06-application-delivery/README.md) |

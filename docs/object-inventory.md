@@ -28,6 +28,14 @@
 | 4 | XML Policy | `xml_policy_lesson4` | XSD, limits, forbidden entities |
 | 4 | OpenAPI Policy | `openapi_policy_lesson4` | Contract enforcement |
 | 4 | DoS Policy | `dos_policy_lesson4` | Login HTTP Access Limit; attached to `Test1_pol` |
+| 5 | Health Check | `hc_bot_l5_http` | HTTP `GET /health`, expected `200` |
+| 5 | Server Pool | `pool_bot_l5` | `10.0.20.2:8004`; backend SSL disabled |
+| 5 | Content Route | `route_bot_l5` | Host `bot.lab.local` -> bot pool |
+| 5 | Bot Policy | `bot_policy_l5` | Selected in `clone_inline`; contains biometric, threshold, and known-bot controls |
+| 5 | Biometric Detection | `biometric_l5` | Interaction/trait evidence for `bot.lab.local/` |
+| 5 | Threshold Detection | `threshold_l5` | Client-IP crawler/error and content-scraping thresholds |
+| 5 | Known Bots Detection | `known_bots_l5` | Recognized crawler/scanner/crawler-identity handling |
+| 5 | ML Bot Detection | `ml_bot_l5` | Separate `Test1_pol` Machine Learning lifecycle |
 | 6 | Health Check | `hc_delivery_l6_http` | HTTP `GET /` on the Lesson 6 backend |
 | 6 | Server Pool | `pool_delivery_l6` | `10.0.20.2:8003` |
 | 6 | Content Route | `route_delivery_l6` | Host `delivery.lab.local` -> Lesson 6 pool |
@@ -58,3 +66,5 @@ See each lesson for complete child-rule settings and validation evidence.
 Lesson 7 evidence note: the supplied policy screenshot is an intermediate capture with `accLim1`, `MalIP`, and Fragment Protection off. The final report records `HAL_7`/`MALIP_7`, and the lab operator confirmed Fragment Protection was enabled afterward.
 
 Lesson 8 evidence note: lab screenshots verify feature visibility, built-in templates, profile `Test1`, target `http://juice.lab.local`, template `OWASP Top 10`, policy `TestOwasp10`, `Run Now`, and status `Starting`. The assessment workflow adds no enforcement attachment.
+
+Lesson 5 evidence note: the ML settings capture shows anomaly count `1` and dynamic update enabled, while the final report records anomaly threshold `2` and dynamic update disabled during the controlled anomaly test. Both records are retained in the Lesson 5 documentation.

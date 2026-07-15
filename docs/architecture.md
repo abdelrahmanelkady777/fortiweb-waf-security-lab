@@ -16,6 +16,7 @@ flowchart TB
     B --> A1["Training apps<br/>Juice Shop :3000/:3001<br/>WebGoat :8080"]
     B --> A3["Lesson 3 site :8000"]
     B --> A4["Lesson 4 API :8002"]
+    B --> A5["Lesson 5 bot lab :8004"]
     B --> A6["Lesson 6 delivery :8003"]
     B -.-> L6["Lesson 6 LDAP :389"]
     W -.->|"Lesson 7 TCP/514 JSON"| S7["Syslog receiver<br/>10.0.20.2"]
@@ -27,8 +28,8 @@ flowchart TB
 2. `Vip1` receives the connection.
 3. `Test1_pol` inspects the Host header in HTTP Content Routing mode.
 4. The selected route chooses the server pool.
-5. `clone_inline` and its child policies inspect or transform the request/response.
-6. Direct `Test1_pol` controls can authenticate, cache, accelerate, script, or rate-limit the transaction.
+5. `clone_inline` and its child policies inspect or transform the request/response, including `bot_policy_l5` for Lesson 5.
+6. Direct `Test1_pol` controls can run ML bot detection, authenticate, cache, accelerate, script, or rate-limit the transaction.
 7. `POLHTTP7` evaluates session/source-IP request and connection limits; Layer 3 Fragment Protection handles packet structure before HTTP.
 8. FortiWeb forwards allowed traffic to the selected backend over HTTP.
 9. Local logs retain Event, Attack, and Traffic context; selected records are forwarded as JSON to `10.0.20.2:514/TCP`.
@@ -72,6 +73,7 @@ Feature Visibility
 - Earlier hostnames are regression-tested after protection changes.
 - Backend-local validation precedes WAF troubleshooting.
 - Authentication, caching, and queue tests use fresh independent sessions when cookies affect the result.
+- Bot controls begin in Alert; temporary enforcement is tested with fresh automation identities, then returned to Alert in the shared-lab operating state.
 - DoS actions begin in Alert; only one low-threshold rule is deliberately enforced at a time.
 - Blocking tests end with timer recovery and earlier-route regression checks.
 - Active scans require an authorized target, bounded crawl scope, approved window, and post-scan regression.

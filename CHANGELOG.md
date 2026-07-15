@@ -18,6 +18,28 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - Nothing yet.
 
+## [0.9.0] - 2026-07-15
+
+### Added
+
+- Lesson 5 integrated bot-mitigation backend on `10.0.20.2:8004` and `bot.lab.local` behind the existing VIP.
+- Biometric, threshold, Known Bots, and ML bot-detection records; focused route validation and private-lab traffic helpers.
+- Eight curated Lesson 5 captures with direct-proof captions and a sanitized FortiWeb object record.
+
+### Changed
+
+- Extended the root architecture, hostname helper, smoke test, object inventory, troubleshooting index, backend-purpose index, repository map, and FortiWeb record index through Lesson 5.
+
+### Validated
+
+- Supplied captures directly show local valid/invalid backend login, routed `cookiesession1`, biometric/threshold/known-bot attack-log events, and capture-time configuration values.
+- The report records browser, threshold, Known Bots, ML, temporary-enforcement, recovery, and cross-route regression results where raw captures were not supplied.
+
+### Evidence notes
+
+- The ML capture shows anomaly count `1` with dynamic updates enabled; the final report records threshold `2` and dynamic updates disabled during the controlled anomaly test. Both are retained without asserting an unsupported final value.
+- The Known Bots settings capture shows temporary `Alert & Deny`; the report records the non-disruptive operating state as Alert after the proof.
+
 ### Fixed
 
 - Nothing yet.

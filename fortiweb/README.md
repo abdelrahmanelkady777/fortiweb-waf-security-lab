@@ -8,6 +8,7 @@ These files are human-readable rebuild records, not raw appliance exports. They 
 | 2 | [`sanitized-objects/lesson-02.md`](sanitized-objects/lesson-02.md) |
 | 3 | [`sanitized-objects/lesson-03.md`](sanitized-objects/lesson-03.md) |
 | 4 | [`sanitized-objects/lesson-04.md`](sanitized-objects/lesson-04.md) |
+| 5 | [`sanitized-objects/lesson-05.md`](sanitized-objects/lesson-05.md) |
 | 6 | [`sanitized-objects/lesson-06.md`](sanitized-objects/lesson-06.md) |
 | 7 | [`sanitized-objects/lesson-07.md`](sanitized-objects/lesson-07.md) |
 | 8 | [`sanitized-objects/lesson-08.md`](sanitized-objects/lesson-08.md) |
