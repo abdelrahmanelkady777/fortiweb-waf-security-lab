@@ -43,6 +43,16 @@ flowchart LR
 
 FortiWeb must use the Ubuntu host address and published port. Docker bridge addresses such as `172.17.x.x` are internal container addresses and were not used as pool members.
 
+### Captured topology and interface state
+
+![EVE-NG topology linking the two Linux nodes through FortiWeb](evidence/01-eve-ng-topology.png)
+
+The topology capture directly shows two Linux nodes connected across FortiWeb, with the client-side link on `port2`, the server-side link on `port3`, and separate management-network links. The image does not display node IP addresses or identify which Linux node is Kali versus Ubuntu; those roles and addresses remain documented by the IP plan above.
+
+![FortiWeb interface addressing](evidence/01-fortiweb-interface-addressing.png)
+
+The interface capture directly verifies `port2` at `10.0.11.1/24`, `port3` at `10.0.20.1/24`, and both links up. It also shows management `port1` at `192.168.1.41/24`, whereas the recorded Lesson 1 lab narrative lists `192.168.1.32`. This later capture therefore does not prove the original management address. The difference does not alter the application data path, which uses `port2` and `port3`.
+
 ## 3. Client and backend preparation
 
 ### Kali configuration
@@ -75,6 +85,10 @@ docker run -d --name juiceshop1 -p 3000:3000 bkimminich/juice-shop
 
 Both local requests must succeed before FortiWeb troubleshooting begins.
 
+![Docker containers including Juice Shop published on backend port 3000](evidence/01-backend-juice-shop-container.png)
+
+This later-state backend capture directly shows the `juiceshop` container running with host port `3000` published to container port `3000`. It was collected after the cumulative lab had grown, so it also includes `juiceshop2`, WebGoat, and LDAP containers introduced or used beyond the Lesson 1 foundation. It does not show the backend host IP, a health-check result, or the original Lesson 1 point-in-time container state.
+
 ## 4. FortiWeb objects created
 
 | Order | Object type | Recorded name | Critical values | Purpose |
@@ -97,6 +111,10 @@ Both local requests must succeed before FortiWeb troubleshooting begins.
 6. Create a permissive protected-hostname object for first testing.
 7. Create `Test1_pol`, select the virtual server, HTTP service, protected hostname, and Juice Shop pool.
 8. Enable/save the policy.
+
+![FortiWeb Network VIP named VIP1 on port2](evidence/01-network-vip-vip1.png)
+
+The FortiWeb capture directly verifies the Network VIP object `VIP1` at `10.0.11.100/24` on `port2`. `VIP1` is the Network VIP; the separately recorded virtual server is `Vip1`. This screenshot does not show the virtual-server page or its binding to `VIP1`.
 
 ## 5. Validation
 
@@ -127,6 +145,10 @@ Expected proof:
 
 Observed result: all three conditions were met. FortiWeb was forwarding application traffic as a reverse proxy, not merely answering ICMP.
 
+![HTTP request to juice.lab.local resolving to the FortiWeb VIP and returning 200](evidence/01-vip-http-200-response.png)
+
+The terminal capture directly shows `juice.lab.local` resolving to `10.0.11.100`, a TCP connection from `10.0.11.2` to port `80`, a `GET /` request with `Host: juice.lab.local`, and an `HTTP/1.1 200 OK` response. The visible excerpt ends in the response headers, so it does not independently prove the response-body title. It also does not expose the internal `Vip1` -> `Test1_pol` -> pool attachment pages; those objects remain part of the sanitized Lesson 1 record.
+
 ## 6. Attacks attempted
 
 No attack payload was part of Lesson 1. This lesson intentionally proved delivery before security enforcement. Introducing an attack before the base route worked would have made WAF blocks, route failures, and backend failures difficult to distinguish.
@@ -141,7 +163,21 @@ No attack payload was part of Lesson 1. This lesson intentionally proved deliver
 | VIP request hangs | VIP, virtual server, service, or policy is disabled/misbound | Check the VIP interface, `Vip1`, HTTP service, and `Test1_pol` status |
 | FortiWeb pool is down while Docker works | Pool points at a Docker bridge IP or wrong port | Use `10.0.20.2:3000`, not the container-only `172.17.x.x` address |
 
-## 8. Final validated state
+## 8. Evidence index
+
+| Evidence | Directly proves | Does not prove / limitation |
+| --- | --- | --- |
+| [`01-eve-ng-topology.png`](evidence/01-eve-ng-topology.png) | Physical EVE-NG links through FortiWeb `port2` and `port3`, plus management links | Node roles, IP addresses, or FortiWeb object configuration |
+| [`01-fortiweb-interface-addressing.png`](evidence/01-fortiweb-interface-addressing.png) | `port2` `10.0.11.1/24`, `port3` `10.0.20.1/24`, links up | Original management IP; capture shows `192.168.1.41/24` rather than the recorded `192.168.1.32` |
+| [`01-backend-juice-shop-container.png`](evidence/01-backend-juice-shop-container.png) | Running `juiceshop` container with host port `3000` published | Backend IP, health check, pool membership, or original point-in-time state; later-lesson containers are also visible |
+| [`01-network-vip-vip1.png`](evidence/01-network-vip-vip1.png) | Network VIP `VIP1`, `10.0.11.100/24`, interface `port2` | Separate virtual server `Vip1`, pool, hostname, service, or policy attachment |
+| [`01-vip-http-200-response.png`](evidence/01-vip-http-200-response.png) | `juice.lab.local` -> `10.0.11.100:80`, source `10.0.11.2`, `GET /`, `200 OK` | Response-body title or individual internal FortiWeb attachment pages |
+
+No supplied screenshot directly shows `Vip1`, `hc_icmp_juice`, `Juice_shop`, the protected-hostname object, or the `Test1_pol` configuration page. Their names and attachment relationships are retained from the repository's canonical Lesson 1 record without presenting them as screenshot-proven.
+
+## 9. Final validated state
+
+The table below is the repository-recorded final Lesson 1 state. Direct screenshot coverage and limitations are separated in the evidence index above.
 
 | Check | Final result |
 | --- | --- |
@@ -152,4 +188,3 @@ No attack payload was part of Lesson 1. This lesson intentionally proved deliver
 | End-to-end Juice Shop response | `200 OK`, correct application HTML |
 
 Lesson 1 ended with one working VIP, one virtual server, one pool member, and one server policy. Lesson 2 modifies this same delivery path instead of creating a separate lab.
-
