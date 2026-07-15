@@ -10,6 +10,24 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-07-16
+
+This patch release backfills implementation evidence for Lesson 4 (`v0.4.0`) without adding a new lesson or changing the integrated single-VIP lab architecture.
+
+### Added
+
+- Thirteen curated Lesson 4 implementation captures covering API backend/routing, shared FortiWeb objects, API-protection attachments, JSON/XML/GraphQL enforcement, validation logs, and the login-burst attempt.
+
+### Changed
+
+- Added claim-specific captions, an evidence index, and screenshot-coverage notes to the Lesson 4 README and sanitized object record.
+- Reconciled capture-time `API_lesson4`, `Juice_shpool`, `POLXML`, `policy_L4`, `QL4`, `openAPI`, and `/api/*` with the existing descriptive Lesson 4 narrative without rewriting the single-VIP design.
+
+### Evidence notes
+
+- The login-burst capture returns `500` for all 20 requests and does not prove the recorded rate-limit threshold transition; configuration/edit captures are retained as later or unsaved state where appropriate.
+- No supplied screenshot directly proves the content route, schema contents, OpenAPI rule/definition, HTTP Access Limit object, JWT/ML behavior, method enforcement, or full regression suite.
+
 ## [0.2.1] - 2026-07-15
 
 This patch release backfills implementation evidence for Lesson 1 (`v0.1.0`) and Lesson 2 (`v0.2.0`) without adding a new lesson or changing the single-VIP lab architecture. (It was released after `v0.9.0`; entries are ordered by release recency.)

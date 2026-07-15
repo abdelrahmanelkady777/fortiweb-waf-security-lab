@@ -69,6 +69,10 @@ curl -i -X POST http://127.0.0.1:8002/api/login \
 
 Observed local result: port `8002` listened; `/health` returned `200`, registration returned `201`, and login returned a JWT.
 
+![Python Lesson 4 API listening on backend port 8002](evidence/04-backend-listener-8002.png)
+
+The backend capture directly shows a Python process listening on `0.0.0.0:8002`. It does not prove HTTP health, the backend host address, FortiWeb pool membership, or routed traffic by itself.
+
 ## 4. FortiWeb routing integration
 
 1. Create `pool_api_lesson4` with `10.0.20.2:8002`.
@@ -87,6 +91,18 @@ curl -i -X POST http://api.lab.local/api/register \
 ```
 
 Observed result: health returned `200`, valid registration returned `201`, and FortiWeb injected `cookiesession1`, confirming the request used the active policy path.
+
+![Routed Lesson 4 API health response](evidence/04-routed-health-200.png)
+
+The terminal capture directly shows `http://api.lab.local/health` returning `200 OK` from `Lesson4API/1.0`, a FortiWeb `cookiesession1`, and JSON identifying service `lesson4-api` on port `8002`. It is strong runtime proof of the hostname-based protected path, but `curl -i` does not display DNS resolution or the VIP address. The historical cookie value belongs only to the isolated lab transaction.
+
+![Captured Lesson 4 API server-pool configuration](evidence/04-server-pool-api-lesson4.png)
+
+The FortiWeb edit screen directly shows capture-time pool `API_lesson4`, HTTP Reverse Proxy, member `10.0.20.2:8002` enabled, Round Robin, health check `Juice_health`, and persistence `ip_presist`. The repository narrative records the pool as `pool_api_lesson4`; both names are retained rather than silently normalized. `Juice_health` and `ip_presist` are reused shared objects, not claimed as Lesson 4 creations. Because the `OK` button is still visible, this configuration screen alone does not prove save state; the routed health response supplies runtime corroboration.
+
+![Later cumulative protected-hostname object containing api.lab.local](evidence/04-protected-hostname-later-state.png)
+
+The later protected-hostname capture shows `api.lab.local` accepted inside shared object `Juice_shpool`, alongside hostnames from earlier and later lessons. It proves capture-time membership but is not a clean Lesson 4 point-in-time screen, and the open edit form does not independently prove save state.
 
 ## 5. Baseline JWT behavior
 
@@ -152,6 +168,14 @@ Final status: policy creation tested; collection unavailable in the trial/image 
 | JSON Policy | `policy_l4` | Contains the rule |
 | Attachment | `clone_inline` | JSON Protection Policy set to `policy_l4` |
 
+![Later cumulative inline-profile API protection attachments](evidence/04-inline-api-protection-attachments-later-state.png)
+
+The later Inline Protection Profile edit screen directly shows capture-time API attachments `POLXML`, `policy_L4`, `QL4`, and `openAPI`. It also shows Lesson 5 bot policy `bot_policy_l5`, proving the screenshot was collected after the Lesson 4 point-in-time state. The crop does not show the inline-profile name, server-policy attachment, or save result. The capture-time names differ from the descriptive names in the repository record and are reconciled in the evidence index and sanitized object record.
+
+![JSON protection rule for the Lesson 4 API](evidence/04-json-rule-register-alert-deny.png)
+
+The JSON rule list directly shows `json_rule_register_lesson4`, Host `api.lab.local`, Request URL `/api/*`, action `Alert & Deny`, and Medium severity. The captured `/api/*` scope is broader than the README's recorded `/api/register` scope. The screenshot does not expose the schema group, JSON policy membership, or saved profile attachment.
+
 ### Valid and invalid requests
 
 ```bash
@@ -177,6 +201,10 @@ curl -i -X POST http://api.lab.local/api/register \
 ```
 
 The invalid requests initially created users and produced no attack logs because `policy_l4` existed but was not attached to the active `clone_inline` profile. After attaching it and re-saving `Test1_pol`, violations were detected. Changing the rule to Alert & Deny blocked them while valid JSON remained allowed.
+
+![Invalid JSON type receiving a FortiWeb block response](evidence/04-json-invalid-type-block-response.png)
+
+The terminal capture shows a registration request with string value `"age":"twenty"` receiving `HTTP/1.1 500 Internal Server Error` and the start of FortiWeb block-page HTML. The same screenshot also contains a preceding `/api/register` block page for client `10.0.11.2` with Attack ID `20000043`; its layout does not unambiguously bind that visible ID to the command shown below. The matching attack-log capture later in this lesson separately proves JSON Validation Security events.
 
 ## 8. XML Protection and XXE
 
@@ -217,6 +245,14 @@ curl -i -X POST http://api.lab.local/api/xml/upload \
 
 Observed result: invalid XML, malformed XML, and the XXE payload were detected in Alert mode and denied after enforcement; valid XML remained allowed.
 
+![FortiWeb block page for the XML upload endpoint](evidence/04-xml-xxe-block-response.png)
+
+The block-page capture directly shows URL `api.lab.local/api/xml/upload`, client `10.0.11.2`, Attack ID `20000029`, and Message ID `2186`. The request payload and HTTP status are outside the crop, so the screenshot alone does not prove that the triggering body was XXE.
+
+![XML External Entity violation in the FortiWeb attack log](evidence/04-xml-xxe-attack-log.png)
+
+The matching log capture shows `Test1_pol`, source `10.0.11.2`, destination `10.0.20.2`, Main Type `XML Validation Violation`, and Sub Type `XML External Entity Violation`. Together with the block-page endpoint, it supports XXE enforcement, but the two screenshots do not share a visible request identifier or timestamp mapping.
+
 ## 9. GraphQL Protection
 
 Several FortiWeb GraphQL toggles mean allow when enabled. Introspection and fragments were therefore disabled so their use became a violation.
@@ -254,6 +290,14 @@ curl -i -X POST http://api.lab.local/graphql \
 
 Observed result: the normal query passed; introspection, fragment, and bad/deep cases were detected and blocked.
 
+![FortiWeb block page for the GraphQL endpoint](evidence/04-graphql-introspection-block-response.png)
+
+The block-page capture directly shows URL `api.lab.local/graphql`, client `10.0.11.2`, Attack ID `20000057`, and Message ID `2188`. The GraphQL body and HTTP status are outside the crop, so the page alone does not identify introspection as the trigger.
+
+![GraphQL Introspection Violation in the FortiWeb attack log](evidence/04-graphql-introspection-attack-log.png)
+
+The matching log row directly shows `Test1_pol`, source `10.0.11.2`, destination `10.0.20.2`, Main Type `GraphQL Validation Security`, and Sub Type `GraphQL Introspection Violation`. It proves detection of introspection use, although the supplied captures do not expose a shared request ID that conclusively maps the row to the block page.
+
 ## 10. OpenAPI Validation
 
 | Object type | Name | Settings |
@@ -280,6 +324,10 @@ curl -i -X POST http://api.lab.local/api/register \
 ```
 
 Observed result: the defined path/method remained allowed; unknown paths, wrong methods, and contract-invalid bodies were denied after enforcement.
+
+![JSON and OpenAPI validation events under Test1_pol](evidence/04-json-openapi-attack-log.png)
+
+The attack-log capture directly shows two `JSON Validation Security` rows and one `Openapi Validation Violation` row under `Test1_pol` from `10.0.11.2` to `10.0.20.2`. The cropped view does not show subtype, hostname, URL, method, action, response, definition, or request payload, so it cannot attribute a row to a specific command or prove the exact OpenAPI rule configuration.
 
 ## 11. Access control and API hygiene
 
@@ -316,6 +364,10 @@ done
 ```
 
 Observed result: early requests reached the backend and returned `401`; later requests were blocked/rate-limited after the configured threshold.
+
+![Twenty-request login burst returning 500 for every request](evidence/04-login-burst-all-500.png)
+
+This capture directly shows 20 POST requests to `http://api.lab.local/api/login`, all returning status `500`. It conflicts with the documented expected transition from early backend `401` responses to later FortiWeb enforcement. Because response bodies and headers were discarded, the image cannot distinguish a WAF block page from a backend/server error and does not prove the `5 requests / 10 seconds` threshold. It is retained as a failed or already-blocked capture, not presented as successful rate-limit validation.
 
 ## 13. Final regression validation
 
@@ -367,7 +419,29 @@ curl -i -X POST http://api.lab.local/graphql \
 | GraphQL toggle confusion | Introspection/fragments toggles mean allowed when on | Turn them off to make their use a violation |
 | Mobile/JWT control absent | Feature not exposed in the current GUI | Validate backend JWT honestly; mark FortiWeb JWT unavailable |
 
-## 15. Final status
+## 15. Evidence index
+
+| Evidence | Directly proves | Does not prove / limitation |
+| --- | --- | --- |
+| [`04-backend-listener-8002.png`](evidence/04-backend-listener-8002.png) | Python listens on `0.0.0.0:8002` | HTTP health, backend IP, pool membership, or routed traffic |
+| [`04-routed-health-200.png`](evidence/04-routed-health-200.png) | `api.lab.local/health` returns `200`, Lesson 4 service/port JSON, and `cookiesession1` | DNS/VIP address is not displayed; contains a historical lab cookie |
+| [`04-server-pool-api-lesson4.png`](evidence/04-server-pool-api-lesson4.png) | Capture-time `API_lesson4`, `10.0.20.2:8002`, HTTP, Round Robin, `Juice_health`, `ip_presist` | Narrative pool name differs; edit form does not prove save state |
+| [`04-protected-hostname-later-state.png`](evidence/04-protected-hostname-later-state.png) | Later `Juice_shpool` includes and accepts `api.lab.local` | Later hostnames are visible; no clean Lesson 4/save-state proof |
+| [`04-inline-api-protection-attachments-later-state.png`](evidence/04-inline-api-protection-attachments-later-state.png) | Capture-time API attachments `POLXML`, `policy_L4`, `QL4`, `openAPI` | Later `bot_policy_l5`; crop omits profile/policy name and save state |
+| [`04-json-rule-register-alert-deny.png`](evidence/04-json-rule-register-alert-deny.png) | `json_rule_register_lesson4`, `api.lab.local`, `/api/*`, Alert & Deny, Medium | Broader than narrative `/api/register`; schema group/policy attachment not visible |
+| [`04-json-invalid-type-block-response.png`](evidence/04-json-invalid-type-block-response.png) | String `age` request receives `500` and block-page HTML; a preceding `/api/register` page shows Attack ID `20000043` | Layout does not conclusively bind the visible ID to the visible command |
+| [`04-json-openapi-attack-log.png`](evidence/04-json-openapi-attack-log.png) | Two JSON Validation and one OpenAPI Validation rows under `Test1_pol` | No command, URL, method, subtype, action, response, or rule mapping |
+| [`04-xml-xxe-block-response.png`](evidence/04-xml-xxe-block-response.png) | Block page for `/api/xml/upload`, client `10.0.11.2`, Attack ID `20000029` | Payload/status not visible; page alone does not identify XXE |
+| [`04-xml-xxe-attack-log.png`](evidence/04-xml-xxe-attack-log.png) | XML External Entity Violation under `Test1_pol` | No shared request ID mapping it conclusively to the block page |
+| [`04-graphql-introspection-block-response.png`](evidence/04-graphql-introspection-block-response.png) | Block page for `/graphql`, client `10.0.11.2`, Attack ID `20000057` | Query/status not visible; page alone does not identify introspection |
+| [`04-graphql-introspection-attack-log.png`](evidence/04-graphql-introspection-attack-log.png) | GraphQL Introspection Violation under `Test1_pol` | No shared request ID mapping it conclusively to the block page |
+| [`04-login-burst-all-500.png`](evidence/04-login-burst-all-500.png) | Twenty login POSTs all returned `500` | Does not show threshold transition or distinguish WAF from backend errors |
+
+No supplied screenshot directly proves the content-route object, JSON/XML schema contents, GraphQL final toggle values, OpenAPI definition/rule settings, HTTP Access Limit object/threshold, JWT flow, ML collection state, method blocks, or known-good regression results. Those capabilities remain repository-recorded rather than newly screenshot-proven.
+
+## 16. Final status
+
+The table below is the repository-recorded final Lesson 4 state. Direct screenshot coverage and limitations are separated in the evidence index above.
 
 | Area | Status |
 | --- | --- |
@@ -382,4 +456,3 @@ curl -i -X POST http://api.lab.local/graphql \
 | FortiWeb mobile/JWT validation | Unavailable in the tested GUI; backend JWT complete |
 
 Lesson 4 completed a single integrated web-and-API protection system rather than a collection of disconnected mini-labs.
-
