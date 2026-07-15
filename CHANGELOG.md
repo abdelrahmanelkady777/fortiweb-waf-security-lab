@@ -14,11 +14,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - Root MIT license covering the repository's original code and documentation.
 - Five curated Lesson 1 implementation captures covering the EVE-NG topology, FortiWeb data-plane interfaces, backend Juice Shop container, Network VIP, and successful HTTP response through the VIP.
+- Eleven curated Lesson 2 captures covering backend services, shared-VIP hostname resolution, pools, content routes, integrated policy state, WebGoat routing, X-Forwarded-For, the Kali IP group, and signature-event logs.
 
 ### Changed
 
 - Added claim-specific captions, an evidence index, and explicit proof limitations to the Lesson 1 README and sanitized object record.
 - Preserved the management-address discrepancy between the Lesson 1 narrative (`192.168.1.32`) and the later interface capture (`192.168.1.41/24`) without changing the documented data path.
+- Added Lesson 2 evidence captions/index entries and reconciled capture-time `Juice_shpool`, `kali_ip`, later `clone_inline`, mixed-date attack logs, and the temporarily unhealthy WebGoat container without rewriting the single-VIP design.
+
+### Evidence notes
+
+- The supplied Lesson 2 screenshots do not directly prove pool-member details, persistence behavior, protected-hostname membership, certificate/TLS negotiation, or the HTTP backend leg after offload; those capabilities remain repository-recorded.
 
 ## [0.9.0] - 2026-07-15
 
